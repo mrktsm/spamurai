@@ -38,7 +38,7 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
       />
       <span
         className={classNames(
-          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-5 user-select-none", // Style for text
+          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[18px]", // Style for text
           {
             "opacity-0": isOn, // Hide "Off" text when "On"
             "opacity-100": !isOn, // Show "Off" text when "Off"
@@ -49,7 +49,7 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
       </span>
       <span
         className={classNames(
-          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-1 user-select-none", // Style for text
+          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[6px] user-select-none", // Style for text
           {
             "opacity-100": isOn, // Show "On" text when "On"
             "opacity-0": !isOn, // Hide "On" text when "Off"
