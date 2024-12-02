@@ -6,6 +6,12 @@
   "action": {
     "default_popup": "index.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"]
+    }
+  ],
   "permissions": ["scripting"],
   "host_permissions": ["https://*/*", "http://*/*"]
 }
