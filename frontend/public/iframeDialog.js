@@ -1,28 +1,26 @@
 function injectModal() {
-  // Check if the dialog already exists to avoid duplication
   if (document.querySelector("#oauth-modal")) return;
 
-  // Create the dialog
   const dialog = document.createElement("dialog");
   dialog.style.width = "384px";
   dialog.style.height = "384px";
   dialog.id = "oauth-modal";
   dialog.style.padding = "0";
   dialog.style.position = "fixed";
-  dialog.style.zIndex = "9999"; // Ensure it stays on top
-  dialog.style.background = "transparent"; // Make the dialog background transparent
-  dialog.style.border = "none"; // Remove border
-  dialog.style.top = "0"; // Ensure it is aligned to the top
-  dialog.style.left = "0"; // Ensure it is aligned to the lef
+  dialog.style.zIndex = "9999";
+  dialog.style.background = "transparent";
+  dialog.style.border = "none";
+  dialog.style.top = "0";
+  dialog.style.left = "0";
 
   // Create the iframe
   const iframe = document.createElement("iframe");
-  iframe.src = chrome.runtime.getURL("modal.html"); // URL to modal.html
+  iframe.src = chrome.runtime.getURL("modal.html");
   iframe.id = "custom-modal";
-  iframe.style.width = "100%"; // Make iframe width 100% to fill the dialog
-  iframe.style.height = "100%"; // Make iframe height 100% to fill the dialog
-  iframe.style.border = "none"; // Ensure no border for the iframe
-  iframe.style.display = "block"; // Ensure iframe is displayed as a block
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.border = "none";
+  iframe.style.display = "block";
 
   const handleDialogClick = (event) => {
     if (event.target === dialog) {
