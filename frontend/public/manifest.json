@@ -9,9 +9,15 @@
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["content.js"]
+      "js": ["content.js", "iframeDialog.js"]
     }
   ],
-  "permissions": ["scripting"],
+  "permissions": ["scripting", "activeTab"],
+  "web_accessible_resources": [
+    {
+      "resources": ["*.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "host_permissions": ["https://*/*", "http://*/*"]
 }
