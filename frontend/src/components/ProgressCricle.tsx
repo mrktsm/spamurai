@@ -88,12 +88,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen">
-      <svg
-        ref={svgRef}
-        width={radius * 2}
-        height={radius * 2}
-        className="shadow-md"
-      ></svg>
+      <svg ref={svgRef} width={radius * 2} height={radius * 2}></svg>
     </div>
   );
 };

@@ -8,12 +8,13 @@ export default function ActionBar() {
         height: "20px", // Match iframe height
         borderRadius: "20px", // Rounded corners
         padding: "0px",
+        border: "1px solid grey",
       }}
-      className="bg-blue-300 text-blue-600 items-center cursor-pointer"
+      className="bg-black text-blue-600 items-center cursor-pointer flex justify-end"
     >
-      <div>
+      <div style={{ marginRight: "2px" }}>
         {" "}
-        <ProgressCircle percentage={30} radius={8} strokeWidth={2} />
+        <ProgressCircle percentage={30} radius={8} strokeWidth={3} />
       </div>
     </div>
   );
