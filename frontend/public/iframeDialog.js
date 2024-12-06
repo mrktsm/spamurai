@@ -1,9 +1,8 @@
 function injectModal() {
   if (document.querySelector("#oauth-modal")) return;
-
   const dialog = document.createElement("dialog");
-  dialog.style.width = "384px";
-  dialog.style.height = "384px";
+  dialog.style.width = "576px";
+  dialog.style.height = "492.5px";
   dialog.id = "oauth-modal";
   dialog.style.padding = "0";
   dialog.style.position = "fixed";

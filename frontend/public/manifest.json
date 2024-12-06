@@ -7,6 +7,9 @@
   "action": {
     "default_popup": "index.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
@@ -15,7 +18,7 @@
   ],
   "permissions": ["scripting", "activeTab", "identity"],
   "oauth2": {
-    "client_id": "1089158818812-rnpeui53rt8er93jph1e7u0e3komk7rm.apps.googleusercontent.com",
+    "client_id": "1089158818812-2ig71e74oqggjhd3golvstjvhf1supoc.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/gmail.readonly"]
   },
   "web_accessible_resources": [
