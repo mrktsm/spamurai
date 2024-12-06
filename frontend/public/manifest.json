@@ -10,15 +10,10 @@
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["content.js", "iframeDialog.js"]
+      "js": ["iframeDialog.js", "content.js"]
     }
   ],
-  "permissions": [
-    "scripting",
-    "activeTab",
-    "identity",
-    "https://gmail.googleapis.com/"
-  ],
+  "permissions": ["scripting", "activeTab", "identity"],
   "oauth2": {
     "client_id": "1089158818812-rnpeui53rt8er93jph1e7u0e3komk7rm.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/gmail.readonly"]
