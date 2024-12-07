@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ProgressCircle from "./ProgressCricle";
+import ProgressCircle from "./ProgressCircle";
 
 export default function ActionBar() {
   const [loaded, setLoaded] = useState<boolean>(false); // Initialize as false
@@ -34,6 +34,7 @@ export default function ActionBar() {
   return (
     <div
       onClick={handleClick} // Toggle the state when clicked
+      className="bg-black text-blue-600 flex items-center justify-end cursor-pointer"
       style={{
         width: loaded ? "65px" : "20px", // Transition from 20px to 65px
         height: "20px",
@@ -42,8 +43,13 @@ export default function ActionBar() {
         border: "1px solid grey",
         transition: "width 0.5s ease", // Smooth width transition
       }}
-      className="bg-black text-blue-600 items-center cursor-pointer flex justify-end"
     >
+      {/* Conditionally render the "Safe" text if loaded */}
+      {loaded && (
+        <div className="text-green-500 font-medium flex items-center justify-center pr-2">
+          Safe
+        </div>
+      )}
       <div style={{ marginRight: "1px" }}>
         <ProgressCircle
           percentage={30}
