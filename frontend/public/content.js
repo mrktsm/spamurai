@@ -1,5 +1,6 @@
 function addButtonNextToDate() {
   const dateElement = document.querySelector(".gH .g3");
+
   if (dateElement && !document.querySelector("#action-bar")) {
     const wrapper = document.createElement("div");
     wrapper.className = "action-bar-wrapper";
@@ -26,6 +27,8 @@ function addButtonNextToDate() {
 
     wrapper.appendChild(iframe);
     dateElement.parentNode.insertBefore(wrapper, dateElement);
+
+    getMessageBody();
   }
 }
 
@@ -33,8 +36,8 @@ function addButtonNextToDate() {
 window.addEventListener("message", (event) => {
   if (event.data?.type === "TOGGLE_ANIMATION") {
     const wrapper = document.querySelector(".action-bar-wrapper");
-    if (wrapper) {
-      wrapper.style.width = wrapper.style.width === "65px" ? "20px" : "65px";
+    if (wrapper && event.data?.dynamicWidth) {
+      wrapper.style.width = `${event.data.dynamicWidth}px`; // Adjust to incoming dynamicWidth
     }
   }
 });
@@ -51,112 +54,195 @@ const observer = new MutationObserver((mutationsList) => {
 const config = { childList: true, subtree: true };
 observer.observe(document.body, config);
 
-// if (dateElement && !document.querySelector("#custom-button")) {
-//   const button = document.createElement("button");
-//   button.textContent = "Custom Button";
-//   button.id = "custom-button"; // Unique ID to ensure it only adds once
-//   button.style.marginRight = "10px";
-//   button.style.padding = "3px 6px";
-//   button.style.backgroundColor = "#4CAF50";
-//   button.style.color = "white";
-//   button.style.border = "none";
-//   button.style.borderRadius = "4px";
-//   button.style.cursor = "pointer";
-//   button.addEventListener("click", async () => {
-//     const messageId = document
-//       .querySelector("[data-message-id]")
-//       ?.getAttribute("data-legacy-message-id");
+function getMessageBody() {
+  const messageId = document
+    .querySelector("[data-message-id]")
+    ?.getAttribute("data-legacy-message-id");
 
-//     if (!messageId) {
-//       console.error("Message ID not found!");
-//       return;
-//     }
+  if (!messageId) {
+    console.error("Message ID not found!");
+    return;
+  }
 
-//     console.log("Current Email Message ID:", messageId);
+  console.log("Current Email Message ID:", messageId);
 
-//     // Send a message to the background script to get the auth token
-//     // Send a message to the background script to get the auth token
-//     chrome.runtime.sendMessage({ action: "getAuthToken" }, async (token) => {
-//       if (!token) {
-//         console.error("Failed to get the token from background script.");
-//         return;
-//       }
+  // Send a message to the background script to get the auth token
+  // Send a message to the background script to get the auth token
+  chrome.runtime.sendMessage({ action: "getAuthToken" }, async (token) => {
+    if (!token) {
+      console.error("Failed to get the token from background script.");
+      return;
+    }
 
-//       const testResponse = await fetch(
-//         "https://www.googleapis.com/gmail/v1/users/me/profile",
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
+    const testResponse = await fetch(
+      "https://www.googleapis.com/gmail/v1/users/me/profile",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-//       const testData = await testResponse.json();
-//       console.log(testData); // If the request succeeds, the token is valid
+    const testData = await testResponse.json();
+    console.log(testData); // If the request succeeds, the token is valid
 
-//       try {
-//         // Fetch the message details
-//         const response = await fetch(
-//           `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
-//           {
-//             method: "GET",
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//               "Content-Type": "application/json",
-//             },
-//           }
-//         );
+    try {
+      // Fetch the message details
+      const response = await fetch(
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-//         if (!response.ok) {
-//           throw new Error(`Error fetching message: ${response.status}`);
-//         }
+      if (!response.ok) {
+        throw new Error(`Error fetching message: ${response.status}`);
+      }
 
-//         const messageData = await response.json();
-//         console.log("Message Data:", messageData);
+      const messageData = await response.json();
+      console.log("Message Data:", messageData);
 
-//         // Example: Display the message snippet
-//         console.log(`Message Snippet: ${messageData.snippet}`);
+      // Example: Display the message snippet
+      console.log(`Message Snippet: ${messageData.snippet}`);
 
-//         let payload = messageData.payload;
-//         let messageBody = "";
+      let payload = messageData.payload;
+      function extractTextFromHTML(htmlContent) {
+        try {
+          // Create a temporary div to parse HTML
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = htmlContent;
 
-//         if (payload.parts) {
-//           payload.parts.forEach((part) => {
-//             if (part.mimeType === "text/plain") {
-//               messageBody = part.body.data
-//                 ? decodeURIComponent(atob(part.body.data))
-//                 : "";
-//             }
-//             if (part.mimeType === "text/html") {
-//               console.log("HTML Body: ", part.body.data);
-//             }
-//           });
-//         } else if (payload.body.data) {
-//           messageBody = decodeURIComponent(atob(payload.body.data));
-//         }
+          // Extract text content, removing extra whitespace
+          return tempDiv.textContent
+            .replace(/\s+/g, " ") // Replace multiple whitespaces with single space
+            .trim(); // Remove leading/trailing whitespace
+        } catch (error) {
+          console.error("Error extracting text from HTML:", error);
+          return htmlContent; // Fallback to original content
+        }
+      }
 
-//         console.log("Full Message Body:", messageBody);
+      function cleanEmailContent(content) {
+        try {
+          // Remove CSS, style blocks, and HTML tags
+          const strippedContent = content
+            .replace(/<style[^>]*>.*?<\/style>/gi, "") // Remove style tags
+            .replace(/<\/?[^>]+(>|$)/g, "") // Remove HTML tags
+            .replace(/&nbsp;/g, " ") // Replace non-breaking spaces
+            .replace(/\s+/g, " ") // Collapse multiple whitespaces
+            .replace(/^[\s\n]+|[\s\n]+$/g, "") // Trim leading/trailing whitespace
+            .trim();
 
-//         // Send POST request using fetch
-//         fetch("http://127.0.0.1:8000/predict", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ text: messageBody }),
-//         })
-//           .then((response) => response.json())
-//           .then((result) => {
-//             console.log("Prediction:", result);
-//           })
-//           .catch((error) => {
-//             console.error("Error:", error);
-//           });
-//       } catch (error) {
-//         console.error("Failed to fetch the message:", error);
-//       }
-//     });
-//   });
+          return strippedContent;
+        } catch (error) {
+          console.error("Error cleaning email content:", error);
+          return content;
+        }
+      }
 
-//   dateElement.parentNode.insertBefore(button, dateElement);
-// }
+      // Use this in your existing decoding logic
+      let messageBody = "";
+
+      if (payload.parts) {
+        for (const part of payload.parts) {
+          if (part.mimeType === "text/plain" || part.mimeType === "text/html") {
+            if (part.body && part.body.data) {
+              const decodedContent = safeBase64Decode(part.body.data);
+
+              // Clean the content if it's HTML
+              messageBody =
+                part.mimeType === "text/html"
+                  ? cleanEmailContent(decodedContent)
+                  : decodedContent;
+
+              if (messageBody) break;
+            }
+          }
+        }
+      } else if (payload.body && payload.body.data) {
+        const decodedContent = safeBase64Decode(payload.body.data);
+
+        // Clean HTML content
+        messageBody = cleanEmailContent(decodedContent);
+      }
+
+      // Ensure non-null message body
+      messageBody = messageBody || "";
+
+      console.log("Final Processed Message Body:", messageBody);
+
+      // Send POST request using fetch
+      fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: messageBody }),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("Prediction:", result);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } catch (error) {
+      console.error("Failed to fetch the message:", error);
+    }
+  });
+}
+
+function safeBase64Decode(encodedData) {
+  if (!encodedData) {
+    console.warn("No encoded data provided");
+    return "";
+  }
+
+  // Debugging step
+  debugBase64Decoding(encodedData);
+
+  try {
+    // Remove whitespace and newlines
+    const cleanData = encodedData
+      .replace(/\s/g, "") // Remove all whitespace
+      .replace(/-/g, "+") // Replace URL-safe characters
+      .replace(/_/g, "/"); // Replace URL-safe characters
+
+    // Add padding if needed
+    const paddedData = cleanData.padEnd(
+      cleanData.length + ((4 - (cleanData.length % 4)) % 4),
+      "="
+    );
+
+    console.log("Cleaned and Padded Data:", paddedData);
+
+    // Attempt decoding
+    const decoded = atob(paddedData);
+    return decodeURIComponent(escape(decoded));
+  } catch (error) {
+    console.error("Decoding Error Details:", {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    });
+    return "";
+  }
+}
+
+function debugBase64Decoding(encodedData) {
+  console.log("Raw Encoded Data:", encodedData);
+  console.log("Data Length:", encodedData.length);
+  console.log("Data First 50 chars:", encodedData.slice(0, 50));
+
+  // Check for common encoding issues
+  if (encodedData.includes(" ")) {
+    console.warn("Encoded data contains whitespace");
+  }
+  if (encodedData.includes("\n")) {
+    console.warn("Encoded data contains newline");
+  }
+}
