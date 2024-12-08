@@ -1,2 +1,3 @@
 backend/venv-fastapi/
 backend/__pycache__/
+backend/model/new_spam_email_model.keras
