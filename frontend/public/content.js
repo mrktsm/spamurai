@@ -7,7 +7,7 @@ function addButtonNextToDate() {
     wrapper.style.cssText = `
       margin-right: 10px;
       padding: 0;
-      background-color: #000000;
+      background-color: #374151;
       border: none;
       border-radius: 20px;
       cursor: pointer;
@@ -24,6 +24,7 @@ function addButtonNextToDate() {
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.transition = "width 0.5s ease 0s";
+    iframe.style.backgroundColor = "#374151";
 
     wrapper.appendChild(iframe);
     dateElement.parentNode.insertBefore(wrapper, dateElement);
@@ -186,6 +187,14 @@ function getMessageBody() {
         .then((response) => response.json())
         .then((result) => {
           console.log("Prediction:", result);
+
+          const iframe = document.querySelector("#action-bar");
+          if (iframe) {
+            iframe.contentWindow.postMessage(
+              { type: "PREDICTION_RESULT", payload: result },
+              "*"
+            );
+          }
         })
         .catch((error) => {
           console.error("Error:", error);

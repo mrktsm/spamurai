@@ -8,14 +8,23 @@ export default function ActionBar() {
   const [percentage, setPercentage] = useState<number>(30); // Simulated percentage
   const [statusText, setStatusText] = useState<string>("Safe");
   const [statusColor, setStatusColor] = useState<string>("text-green-500");
-  const [dynamicWidth, setDynamicWidth] = useState<number>(65); // Default width
+  const [dynamicWidth, setDynamicWidth] = useState<number>(20); // Default width
 
-  // Trigger the loading animation after a short delay (or you can set it based on some condition)
+  const [predictionReceived, setPredictionReceived] = useState<boolean>(false);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "TOGGLE_ANIMATION") {
-        setLoaded((prev) => !prev);
-        setLoadCircle((prev) => !prev);
+      if (event.data?.type === "PREDICTION_RESULT") {
+        const { prediction } = event.data.payload;
+        const newPercentage = prediction * 100;
+
+        setPredictionReceived(true);
+
+        setLoaded(true);
+        setLoadCircle(false);
+
+        // Set the new percentage
+        setPercentage(newPercentage);
       }
     };
 
@@ -26,37 +35,43 @@ export default function ActionBar() {
     };
   }, []);
 
+  // Update statusText, statusColor, and dynamicWidth based on the percentage
   useEffect(() => {
+    if (!predictionReceived) return;
+
+    let newStatusText = "Safe";
+    let newStatusColor = "text-green-500";
+    let newDynamicWidth = 65;
+
     if (percentage <= 35) {
-      setStatusText("Safe");
-      setStatusColor("text-green-500");
+      newStatusText = "Safe";
+      newStatusColor = "text-green-500";
+      newDynamicWidth = 65;
     } else if (percentage > 35 && percentage <= 80) {
-      setStatusText("Suspicious");
-      setStatusColor("text-yellow-500");
+      newStatusText = "Suspicious";
+      newStatusColor = "text-yellow-500";
+      newDynamicWidth = 103;
     } else {
-      setStatusText("High Risk");
-      setStatusColor("text-red-500 font-bold");
+      newStatusText = "High Risk";
+      newStatusColor = "text-red-500 font-bold";
+      newDynamicWidth = 93;
     }
-  }, [percentage]);
 
-  // Update the dynamic width based on the text length
-  useEffect(() => {
-    switch (statusText) {
-      case "Safe":
-        setDynamicWidth(65);
-        break;
-      case "Suspicious":
-        setDynamicWidth(103);
-        break;
-      case "High Risk":
-        setDynamicWidth(93);
-        break;
-      default:
-        setDynamicWidth(30);
-    }
-  }, [statusText]);
+    // Update the state values
+    setStatusText(newStatusText);
+    setStatusColor(newStatusColor);
+    setDynamicWidth(newDynamicWidth);
 
-  // Toggle the loaded state on click
+    // Send updated dynamicWidth to parent
+    window.parent.postMessage(
+      {
+        type: "TOGGLE_ANIMATION",
+        dynamicWidth: newDynamicWidth,
+      },
+      "*"
+    );
+  }, [percentage]); // Dependency on percentage to update dynamicWidth and status
+
   const handleClick = () => {
     if (loaded) {
       const newPercentage = Math.floor(Math.random() * 101); // Random value 0-100
@@ -79,7 +94,7 @@ export default function ActionBar() {
   return (
     <div
       onClick={handleClick} // Toggle the state when clicked
-      className="bg-green flex items-center justify-end cursor-pointer"
+      className="bg-zinc-700 flex items-center justify-end cursor-pointer"
       style={{
         width: loaded ? `${dynamicWidth}px` : "20px", // Dynamic width based on the text length
         height: "20px",

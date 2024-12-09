@@ -31,7 +31,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
       .attr("r", radius - strokeWidth / 2)
       .attr("stroke-width", strokeWidth)
       .attr("fill", "none")
-      .attr("stroke", "#18181b"); // Light grey color for the background circle
+      .attr("stroke", "#71717A"); // Light grey color for the background circle
 
     // Add animated circle for progress
     const animatedCircle = svg
