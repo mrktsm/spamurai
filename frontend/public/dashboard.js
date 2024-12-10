@@ -2,26 +2,40 @@ window.addEventListener("message", (event) => {
   if (event.data?.type === "OPEN_DASHBOARD_DIALOG") {
     // Create iframe for dashboard
     const dashboardIframe = document.createElement("iframe");
-    // dashboardIframe.src = chrome.runtime.getURL("index.html");
-    dashboardIframe.style.position = "fixed";
-    dashboardIframe.style.zIndex = "1000";
+    dashboardIframe.style.zIndex = "9999";
+    dashboardIframe.style.position = "absolute"; // Absolute positioning within the container
     dashboardIframe.style.border = "none";
-    dashboardIframe.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+    dashboardIframe.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
     dashboardIframe.style.width = "300px";
     dashboardIframe.style.height = "400px";
-    dashboardIframe.style.backgroundColor = "red";
+    dashboardIframe.style.backgroundColor = "red"; // For visibility
 
-    // Find the ActionBar element
-    const actionBar = document.querySelector("#action-bar");
-    if (actionBar) {
-      const actionBarRect = actionBar.getBoundingClientRect(); // Get position of ActionBar
-      dashboardIframe.style.top = `${
-        actionBarRect.bottom + window.scrollY + 10
-      }px`; // Position below ActionBar
-      dashboardIframe.style.left = `${actionBarRect.left + window.scrollX}px`; // Align horizontally with ActionBar
+    // Find the action button element
+    const actionButton = document.querySelector("#action-bar"); // Correct selector for the action button
+    if (actionButton) {
+      // Get the position and size of the action button relative to the viewport
+      const actionButtonRect = actionButton.getBoundingClientRect();
+
+      // Find the container where you want to append the iframe (different div)
+      const iframeContainer = document.querySelector(".aHU.hx"); // Replace with your container's selector
+      if (iframeContainer) {
+        // Ensure the iframe container is positioned relative to allow absolute positioning of the iframe
+        iframeContainer.style.position = "relative";
+
+        // Calculate the position of the iframe inside the container
+        const containerRect = iframeContainer.getBoundingClientRect();
+
+        // Position the iframe right below the action button inside iframeContainer
+        dashboardIframe.style.top = `${
+          actionButtonRect.bottom - containerRect.top + 10
+        }px`; // 10px gap
+        dashboardIframe.style.left = `${
+          actionButtonRect.left - containerRect.left
+        }px`; // Align horizontally
+
+        // Append iframe to the iframeContainer
+        iframeContainer.appendChild(dashboardIframe);
+      }
     }
-
-    // Optional: Add close button or click-outside-to-close functionality
-    document.body.appendChild(dashboardIframe);
   }
 });
