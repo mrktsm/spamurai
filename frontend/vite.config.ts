@@ -11,8 +11,8 @@ export default defineConfig({
       input: {
         main: "index.html", // Include the main entry point
         modal: "modal.html", // The modal HTML
-        actionBar: "actionBar.html",
         dashboard: "dashboard.html",
+        actionBar: "actionBar.html",
       },
       output: {
         entryFileNames: `assets/[name].js`,
