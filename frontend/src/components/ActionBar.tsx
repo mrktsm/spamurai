@@ -73,22 +73,17 @@ export default function ActionBar() {
   }, [percentage]); // Dependency on percentage to update dynamicWidth and status
 
   const handleClick = () => {
-    if (loaded) {
-      const newPercentage = Math.floor(Math.random() * 101); // Random value 0-100
-      setPercentage(newPercentage);
-    }
-    setLoaded((prevLoaded) => !prevLoaded);
-
-    // Send the updated dynamicWidth to the parent window
-    const messageData = {
-      type: "TOGGLE_ANIMATION",
-      dynamicWidth: loaded ? 20 : dynamicWidth, // Toggle between full width and collapsed state
-    };
-    window.parent.postMessage(messageData, "*");
-
-    setTimeout(() => {
-      setLoadCircle((prevLoaded) => !prevLoaded);
-    }, 100);
+    // Send message to content script to open dashboard dialog
+    window.parent.postMessage(
+      {
+        type: "OPEN_DASHBOARD_DIALOG",
+        payload: {
+          prediction: percentage,
+          status: statusText,
+        },
+      },
+      "*"
+    );
   };
 
   return (

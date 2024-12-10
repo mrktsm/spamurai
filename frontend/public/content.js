@@ -5,17 +5,17 @@ function addButtonNextToDate() {
     const wrapper = document.createElement("div");
     wrapper.className = "action-bar-wrapper";
     wrapper.style.cssText = `
-      margin-right: 10px;
-      padding: 0;
-      background-color: #374151;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
-      transition: width 0.5s ease;
-      overflow: hidden;
-    `;
+          margin-right: 10px;
+          padding: 0;
+          background-color: #374151;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          width: 20px;
+          height: 20px;
+          transition: width 0.5s ease;
+          overflow: hidden;
+        `;
 
     const iframe = document.createElement("iframe");
     iframe.src = chrome.runtime.getURL("actionBar.html");
