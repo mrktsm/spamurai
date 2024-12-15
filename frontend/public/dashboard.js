@@ -2,12 +2,18 @@ window.addEventListener("message", (event) => {
   if (event.data?.type === "OPEN_DASHBOARD_DIALOG") {
     // Create iframe for dashboard
     const dashboardIframe = document.createElement("iframe");
+    dashboardIframe.src = chrome.runtime.getURL("dashboard.html");
     dashboardIframe.style.zIndex = "9999";
     dashboardIframe.style.position = "absolute"; // Absolute positioning within the container
     dashboardIframe.style.border = "none";
+    // style={{
+    //     width: "350px",
+    //     height: "200px",
+    //     borderRadius: "20px",
     dashboardIframe.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-    dashboardIframe.style.width = "300px";
-    dashboardIframe.style.height = "400px";
+    dashboardIframe.style.width = "350px";
+    dashboardIframe.style.height = "200px";
+    dashboardIframe.style.borderRadius = "20px";
     dashboardIframe.style.backgroundColor = "red"; // For visibility
 
     // Find the action button element
