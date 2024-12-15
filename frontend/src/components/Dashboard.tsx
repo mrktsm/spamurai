@@ -12,11 +12,11 @@ const Dashboard = () => {
       style={{
         width: "450px",
         height: "300px",
-        fontFamily: "'Comfortaa', sans-serif",
+        fontFamily: "'Roboto', sans-serif", // Apply Roboto to everything
         border: "1px solid rgba(255,255,255,0.1)",
       }}
     >
-      <div className="flex items-center space-x-6 w-full">
+      <div className="flex items-center space-x-4 w-full">
         {/* Progress Circle */}
         <div className="flex justify-center relative">
           <ProgressCircle
@@ -25,8 +25,11 @@ const Dashboard = () => {
             radius={70}
             strokeWidth={15}
           />
-          {/* Number inside the progress circle */}
-          <div className="absolute inset-0 flex items-center justify-center text-white text-3xl font-semibold">
+          {/* Number inside the progress circle with Comfortaa font */}
+          <div
+            className="absolute inset-0 flex items-center justify-center text-white text-3xl font-semibold"
+            style={{ fontFamily: "'Comfortaa', sans-serif" }} // Comfortaa font for progress circle number
+          >
             34%
           </div>
         </div>
@@ -39,32 +42,32 @@ const Dashboard = () => {
         >
           {/* iOS-like Tabs */}
           <Tabs.List
-            className="bg-zinc-800 mb-1 rounded-lg p-1 flex items-center justify-between"
+            className="bg-zinc-800 mb-1 rounded-full p-0.5 flex items-center justify-between" // Reduced padding
             aria-label="Dashboard Tabs"
           >
             <Tabs.Trigger
               value="overview"
               className={`
-                flex-1 py-2 mx-1 rounded-lg text-center transition-all duration-300
-                ${
-                  activeTab === "overview"
-                    ? "bg-white text-black shadow-md"
-                    : "text-gray-400 hover:text-gray-200"
-                }
-              `}
+      flex-1 py-1 mx-0.5 rounded-full text-center transition-all duration-300  // Reduced margin
+      ${
+        activeTab === "overview"
+          ? "bg-white text-black shadow-md"
+          : "text-gray-400 hover:text-gray-200"
+      }
+    `}
             >
               Overview
             </Tabs.Trigger>
             <Tabs.Trigger
               value="stats"
               className={`
-                flex-1 py-2 mx-1 rounded-lg text-center transition-all duration-300
-                ${
-                  activeTab === "stats"
-                    ? "bg-white text-black shadow-md"
-                    : "text-gray-400 hover:text-gray-200"
-                }
-              `}
+      flex-1 py-1 mx-0.5 rounded-full text-center transition-all duration-300  // Reduced margin
+      ${
+        activeTab === "stats"
+          ? "bg-white text-black shadow-md"
+          : "text-gray-400 hover:text-gray-200"
+      }
+    `}
             >
               Stats
             </Tabs.Trigger>
@@ -81,7 +84,7 @@ const Dashboard = () => {
               transition={{ duration: 0.3 }}
               className="text-white"
             >
-              <h3 className="text-xl font-semibold mb-3">Email Safety</h3>
+              <h3 className="text-xl font-medium mb-3">Email Safety</h3>
               <div className="space-y-2">
                 <div className="bg-zinc-700 rounded-xl p-3">
                   <div className="flex items-center mb-2">
@@ -107,9 +110,7 @@ const Dashboard = () => {
               transition={{ duration: 0.3 }}
               className="text-white"
             >
-              <h3 className="text-xl font-semibold mb-3">
-                Detailed Statistics
-              </h3>
+              <h3 className="text-xl font-medium mb-3">Detailed Statistics</h3>
               <div className="space-y-2">
                 <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                   <span className="text-gray-300">Total Efficiency</span>
