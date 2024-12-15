@@ -8,12 +8,12 @@ const Dashboard = () => {
 
   return (
     <div
-      className="bg-gradient-to-b from-zinc-800 to-zinc-900 flex items-center justify-center p-4 rounded-2xl shadow-lg"
+      className="bg-gradient-to-b from-zinc-900 to-gray-900 flex items-center justify-center p-4 rounded-2xl shadow-lg"
       style={{
         width: "450px",
         height: "300px",
         fontFamily: "'Roboto', sans-serif",
-        border: "1px solid rgba(255,255,255,0.1)",
+        border: "1px solid grey",
       }}
     >
       <div className="flex items-center space-x-4 w-full">
@@ -47,10 +47,11 @@ const Dashboard = () => {
             <Tabs.Trigger
               value="overview"
               className={`
-                flex-1 py-1 mx-0.5 rounded-full text-center transition-all duration-300
+                flex-1 py-1 mx-0.5 rounded-full text-center transition-all duration-300 border-none
+                focus:outline-none
                 ${
                   activeTab === "overview"
-                    ? "bg-white text-black shadow-md"
+                    ? "bg-zinc-600 text-gray-200 shadow-md"
                     : "text-gray-400 hover:text-gray-200"
                 }
               `}
@@ -61,9 +62,10 @@ const Dashboard = () => {
               value="stats"
               className={`
                 flex-1 py-1 mx-0.5 rounded-full text-center transition-all duration-300
+                focus:outline-none border-none
                 ${
                   activeTab === "stats"
-                    ? "bg-white text-black shadow-md"
+                    ? "bg-zinc-600 text-gray-200 shadow-md"
                     : "text-gray-400 hover:text-gray-200"
                 }
               `}
@@ -87,7 +89,7 @@ const Dashboard = () => {
                 <h3 className="text-xl font-medium">Email Safety</h3>
                 <span className="font-bold text-green-400 text-lg">Safe</span>
               </div>
-              <div className="bg-zinc-700 rounded-lg p-3 space-y-2">
+              <div className="bg-zinc-700 rounded-lg p-3">
                 <p className="text-gray-300 leading-relaxed">
                   This email was found to be safe because it passed all spam
                   checks and comes from a trusted sender.
@@ -115,10 +117,6 @@ const Dashboard = () => {
                 <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                   <span className="text-gray-300">Improvement Rate</span>
                   <span className="font-bold text-green-400">+45%</span>
-                </div>
-                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
-                  <span className="text-gray-300">Consistency</span>
-                  <span className="font-bold text-yellow-400">67%</span>
                 </div>
               </div>
             </motion.div>

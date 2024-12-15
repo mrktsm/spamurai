@@ -6,14 +6,10 @@ window.addEventListener("message", (event) => {
     dashboardIframe.style.zIndex = "9999";
     dashboardIframe.style.position = "absolute"; // Absolute positioning within the container
     dashboardIframe.style.border = "none";
-    // style={{
-    //     width: "350px",
-    //     height: "200px",
-    //     borderRadius: "20px",
     dashboardIframe.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
     dashboardIframe.style.width = "450px";
     dashboardIframe.style.height = "300px";
-    dashboardIframe.style.borderRadius = "20px";
+    dashboardIframe.style.borderRadius = "16px";
     dashboardIframe.style.backgroundColor = "red"; // For visibility
 
     // Find the action button element
@@ -31,13 +27,13 @@ window.addEventListener("message", (event) => {
         // Calculate the position of the iframe inside the container
         const containerRect = iframeContainer.getBoundingClientRect();
 
-        // Position the iframe right below the action button inside iframeContainer
+        // Position the iframe to the right of the action button
         dashboardIframe.style.top = `${
           actionButtonRect.bottom - containerRect.top + 10
         }px`; // 10px gap
-        dashboardIframe.style.left = `${
-          actionButtonRect.left - containerRect.left
-        }px`; // Align horizontally
+        dashboardIframe.style.right = `${
+          containerRect.right - actionButtonRect.right
+        }px`; // Align to the right of the action button
 
         // Append iframe to the iframeContainer
         iframeContainer.appendChild(dashboardIframe);
