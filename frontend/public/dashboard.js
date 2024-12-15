@@ -11,8 +11,8 @@ window.addEventListener("message", (event) => {
     //     height: "200px",
     //     borderRadius: "20px",
     dashboardIframe.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-    dashboardIframe.style.width = "350px";
-    dashboardIframe.style.height = "200px";
+    dashboardIframe.style.width = "450px";
+    dashboardIframe.style.height = "300px";
     dashboardIframe.style.borderRadius = "20px";
     dashboardIframe.style.backgroundColor = "red"; // For visibility
 

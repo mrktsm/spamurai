@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.2",
     "classnames": "^2.5.1",
     "d3": "^7.9.0",
+    "framer-motion": "^11.14.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
