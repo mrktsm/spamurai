@@ -1,19 +1,31 @@
 import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { motion } from "framer-motion";
+import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
 import ProgressCircle from "./ProgressCircle";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
+  // Sample data for spam emails over last 7 days
+  const spamData = [
+    { day: "Mon", spamCount: 3 },
+    { day: "Tue", spamCount: 7 },
+    { day: "Wed", spamCount: 5 },
+    { day: "Thu", spamCount: 2 },
+    { day: "Fri", spamCount: 9 },
+    { day: "Sat", spamCount: 4 },
+    { day: "Sun", spamCount: 6 },
+  ];
+
   return (
     <div
-      className="bg-gradient-to-b from-zinc-900 to-gray-900 flex items-center justify-center p-4 rounded-2xl shadow-lg"
+      className="bg-gradient-to-b from-zinc-900 to-gray-800 flex items-center justify-center p-4 rounded-2xl shadow-lg"
       style={{
         width: "450px",
         height: "300px",
         fontFamily: "'Roboto', sans-serif",
-        border: "1px solid grey",
+        border: "2px solid grey",
       }}
     >
       <div className="flex items-center space-x-4 w-full">
@@ -89,11 +101,19 @@ const Dashboard = () => {
                 <h3 className="text-xl font-medium">Email Safety</h3>
                 <span className="font-bold text-green-400 text-lg">Safe</span>
               </div>
-              <div className="bg-zinc-700 rounded-lg p-3">
-                <p className="text-gray-300 leading-relaxed">
-                  This email was found to be safe because it passed all spam
-                  checks and comes from a trusted sender.
-                </p>
+              <div className="space-y-2">
+                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
+                  <span className="text-gray-300">Spam Check</span>
+                  <span className="font-bold text-green-400"> Passed </span>
+                </div>
+                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
+                  <span className="text-gray-300">Sender Trust</span>
+                  <span className="font-bold text-blue-400">Trusted</span>
+                </div>
+                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
+                  <span className="text-gray-300">Malicious content</span>
+                  <span className="font-bold text-green-400">None</span>
+                </div>
               </div>
             </motion.div>
           </Tabs.Content>
@@ -106,18 +126,28 @@ const Dashboard = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-white"
+              className="text-white h-full"
             >
-              <h3 className="text-xl font-medium mb-3">Detailed Statistics</h3>
-              <div className="space-y-2">
-                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
-                  <span className="text-gray-300">Total Efficiency</span>
-                  <span className="font-bold text-blue-400">89%</span>
-                </div>
-                <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
-                  <span className="text-gray-300">Improvement Rate</span>
-                  <span className="font-bold text-green-400">+45%</span>
-                </div>
+              <h3 className="text-xl font-medium mb-3">Spam Email Trends</h3>
+              <div className="w-full h-24">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={spamData}
+                    margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                  >
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fill: "white" }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Bar
+                      dataKey="spamCount"
+                      fill="#60a5fa"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </motion.div>
           </Tabs.Content>

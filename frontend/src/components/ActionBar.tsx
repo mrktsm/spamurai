@@ -89,7 +89,7 @@ export default function ActionBar() {
   return (
     <div
       onClick={handleClick} // Toggle the state when clicked
-      className="bg-zinc-700 flex items-center justify-end cursor-pointer"
+      className="bg-gradient-to-b from-zinc-900 to-gray-800 flex items-center justify-end cursor-pointer"
       style={{
         width: loaded ? `${dynamicWidth}px` : "20px", // Dynamic width based on the text length
         height: "20px",
