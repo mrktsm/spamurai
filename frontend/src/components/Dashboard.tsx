@@ -9,13 +9,13 @@ const Dashboard = () => {
 
   // Sample data for spam emails over last 7 days
   const spamData = [
-    { day: "Mon", spamCount: 3 },
-    { day: "Tue", spamCount: 7 },
-    { day: "Wed", spamCount: 5 },
+    { day: "Mon", spamCount: 1 },
+    { day: "Tue", spamCount: 1 },
+    { day: "Wed", spamCount: 1 },
     { day: "Thu", spamCount: 2 },
-    { day: "Fri", spamCount: 9 },
-    { day: "Sat", spamCount: 4 },
-    { day: "Sun", spamCount: 6 },
+    { day: "Fri", spamCount: 1 },
+    { day: "Sat", spamCount: 1 },
+    { day: "Sun", spamCount: 3 },
   ];
 
   return (
@@ -129,7 +129,7 @@ const Dashboard = () => {
               className="text-white h-full"
             >
               <h3 className="text-xl font-medium mb-3">Spam Email Trends</h3>
-              <div className="w-full h-24">
+              <div className="w-full h-24 mb-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={spamData}
@@ -148,6 +148,10 @@ const Dashboard = () => {
                     />
                   </BarChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
+                <span className="text-gray-300">Malicious content</span>
+                <span className="font-bold text-green-400">None</span>
               </div>
             </motion.div>
           </Tabs.Content>
