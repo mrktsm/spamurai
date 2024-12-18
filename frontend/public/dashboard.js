@@ -11,6 +11,7 @@ window.addEventListener("message", (event) => {
     dashboardIframe.style.height = "300px";
     dashboardIframe.style.borderRadius = "16px";
     dashboardIframe.style.backgroundColor = "red"; // For visibility
+    dashboardIframe.id = "dashboard-iframe"; // Add an ID for easy reference
 
     // Find the action button element
     const actionButton = document.querySelector("#action-bar"); // Correct selector for the action button
@@ -37,6 +38,19 @@ window.addEventListener("message", (event) => {
 
         // Append iframe to the iframeContainer
         iframeContainer.appendChild(dashboardIframe);
+
+        // Add event listener to close the iframe when clicking outside
+        const closeIframeOnClickOutside = (e) => {
+          if (!dashboardIframe.contains(e.target)) {
+            dashboardIframe.remove(); // Remove the iframe
+            document.removeEventListener("click", closeIframeOnClickOutside); // Clean up the event listener
+          }
+        };
+
+        // Add event listener to the document
+        setTimeout(() => {
+          document.addEventListener("click", closeIframeOnClickOutside);
+        }, 0); // Timeout ensures the click doesn't trigger immediately
       }
     }
   }

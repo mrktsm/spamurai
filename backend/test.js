@@ -4,16 +4,16 @@ const data = {
 
 // Send POST request using fetch
 fetch("http://127.0.0.1:8000/predict", {
-  method: "POST", // Method type
+  method: "POST", 
   headers: {
-    "Content-Type": "application/json", // Specifies that you're sending JSON
+    "Content-Type": "application/json",
   },
-  body: JSON.stringify(data), // Convert the data object to JSON string
+  body: JSON.stringify(data), 
 })
-  .then((response) => response.json()) // Parse the JSON response
+  .then((response) => response.json()) 
   .then((result) => {
-    console.log("Prediction:", result); // Handle the result
+    console.log("Prediction:", result); 
   })
   .catch((error) => {
-    console.error("Error:", error); // Handle any error that occurred
+    console.error("Error:", error);
   });

@@ -128,7 +128,7 @@ const Dashboard = () => {
               transition={{ duration: 0.3 }}
               className="text-white h-full"
             >
-              <h3 className="text-xl font-medium mb-3">Spam Email Trends</h3>
+              <h3 className="text-xl font-medium mb-3">Spam History</h3>
               <div className="w-full h-24 mb-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -150,8 +150,8 @@ const Dashboard = () => {
                 </ResponsiveContainer>
               </div>
               <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
-                <span className="text-gray-300">Malicious content</span>
-                <span className="font-bold text-green-400">None</span>
+                <span className="text-gray-300"> Improvement Rate </span>
+                <span className="font-bold text-green-400">+56%</span>
               </div>
             </motion.div>
           </Tabs.Content>

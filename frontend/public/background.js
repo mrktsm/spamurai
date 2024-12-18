@@ -8,6 +8,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(token);
       }
     });
-    return true; // Required for async sendResponse
+    return true;
   }
 });
