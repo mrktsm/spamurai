@@ -25,7 +25,7 @@ const Dashboard = () => {
         width: "450px",
         height: "300px",
         fontFamily: "'Roboto', sans-serif",
-        border: "2px solid grey",
+        border: "1px solid grey",
       }}
     >
       <div className="flex items-center space-x-4 w-full">

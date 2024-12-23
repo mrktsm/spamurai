@@ -20,7 +20,7 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
     <div
       onClick={handleToggle}
       className={classNames(
-        "flex w-10 h-4 rounded-full transition-all duration-300 shadow-lg cursor-pointer items-center",
+        "flex w-10 h-4 rounded-full transition-all duration-300 shadow-lg cursor-pointer items-center select-none",
         {
           "bg-rose-300": !isOn, // Color from the first version for 'on' state
           "bg-rose-500": isOn,
