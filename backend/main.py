@@ -3,8 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import tensorflow as tf
 import pickle
+import models
+from database import engine, SessionLocal
+from sqlalchemy.orm import Session
 
 app = FastAPI()
+models.Base.metadata.create_all(bind=engine)
 
 # Add CORS middleware to allow cross-origin requests
 app.add_middleware(
@@ -21,13 +25,15 @@ model = tf.keras.models.load_model("model/new_spam_email_model.keras")
 with open("model/tokenizer.pkl", "rb") as f:
     tokenizer = pickle.load(f)
 
+
+class EmailData(BaseModel):
+    text: str
+
 # Endpoint for health check
 @app.get("/health")
 async def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
-class EmailData(BaseModel):
-    text: str
 
 @app.post("/predict")
 async def predict_email(data: EmailData) -> dict[str, float]:
