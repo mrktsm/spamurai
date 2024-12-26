@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import tensorflow as tf
@@ -34,6 +34,21 @@ class EmailData(BaseModel):
 async def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/db_health")
+async def db_health_check(db: Session = Depends(get_db)):
+    try:
+        # Perform a simple query to check the connection
+        db.execute("SELECT 1")  # This query is just to check if the DB is responsive
+        return {"status": "ok", "message": "Database connection is successful"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.post("/predict")
 async def predict_email(data: EmailData) -> dict[str, float]:

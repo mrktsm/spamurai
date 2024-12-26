@@ -10,7 +10,7 @@ window.addEventListener("message", (event) => {
     dashboardIframe.style.width = "450px";
     dashboardIframe.style.height = "300px";
     dashboardIframe.style.borderRadius = "16px";
-    dashboardIframe.style.backgroundColor = "red"; // For visibility
+    dashboardIframe.style.backgroundColor = "black"; // For visibility
     dashboardIframe.id = "dashboard-iframe"; // Add an ID for easy reference
 
     // Find the action button element
