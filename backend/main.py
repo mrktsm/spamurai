@@ -1,12 +1,11 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import tensorflow as tf
-import pickle
-import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+import models
+from spam_ml_model import load_model_and_tokenizer, predict_spam
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -20,12 +19,8 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-
 # Load the model and tokenizer once when the app starts
-model = tf.keras.models.load_model("model/new_spam_email_model.keras")
-with open("model/tokenizer.pkl", "rb") as f:
-    tokenizer = pickle.load(f)
-
+model, tokenizer = load_model_and_tokenizer()
 
 class EmailData(BaseModel):
     text: str
@@ -45,19 +40,12 @@ def get_db():
 @app.get("/db_health")
 async def db_health_check(db: Session = Depends(get_db)):
     try:
-        # Perform a simple query to check the connection
-        db.execute(text("SELECT 1"))  # This query is just to check if the DB is responsive
+        db.execute(text("SELECT 1")) 
         return {"status": "ok", "message": "Database connection is successful"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
 @app.post("/predict")
 async def predict_email(data: EmailData) -> dict[str, float]:
-    # Preprocess the input text and tokenize it
-    seq = tokenizer.texts_to_sequences([data.text])
-    padded_seq = tf.keras.preprocessing.sequence.pad_sequences(seq, maxlen=100, padding='post', truncating='post')
-    
-    # Make the prediction using the trained model
-    prediction = model.predict(padded_seq)[0][0]
-    
+    prediction = predict_spam(model, tokenizer, data.text)
     return {"prediction": prediction}
