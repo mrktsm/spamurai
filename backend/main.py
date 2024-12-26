@@ -6,6 +6,7 @@ import pickle
 import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -45,7 +46,7 @@ def get_db():
 async def db_health_check(db: Session = Depends(get_db)):
     try:
         # Perform a simple query to check the connection
-        db.execute("SELECT 1")  # This query is just to check if the DB is responsive
+        db.execute(text("SELECT 1"))  # This query is just to check if the DB is responsive
         return {"status": "ok", "message": "Database connection is successful"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
