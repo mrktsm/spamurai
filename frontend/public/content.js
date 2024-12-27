@@ -188,7 +188,7 @@ function getMessageBody() {
           text: messageBody,
           user: "example@mail.com",
           message_id: messageId,
-          dkim_selector: dkimSelector,
+          dkim_selector: dkimSelector || null,
           sender: sender,
         }),
       })

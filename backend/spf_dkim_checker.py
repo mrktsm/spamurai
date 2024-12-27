@@ -48,12 +48,16 @@ def check_email_authentication(email, dkim_selector):
     else:
         print(f"No valid SPF record found for {domain}")
 
-    # Check DKIM using the provided selector
-    dkim_valid, dkim_records = check_dkim(domain, dkim_selector)
-    if dkim_valid:
-        print(f"DKIM Records for {domain}: {dkim_records}")
+    # Only check DKIM if a selector is provided (typically for organizational emails)
+    if dkim_selector:
+        dkim_valid, dkim_records = check_dkim(domain, dkim_selector)
+        if dkim_valid:
+            print(f"DKIM Records for {domain}: {dkim_records}")
+        else:
+            print(f"No valid DKIM record found for {domain}")
     else:
-        print(f"No valid DKIM record found for {domain}")
+        # For personal emails without DKIM, we'll consider DKIM check as "not applicable"
+        print(f"No DKIM selector provided for {domain}, likely a personal email")
+        dkim_valid = True  # Consider it valid since it's not applicable
 
-    # Return results
     return spf_valid, dkim_valid

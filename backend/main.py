@@ -7,7 +7,7 @@ from sqlalchemy import text
 import models
 from spam_ml_model import load_model_and_tokenizer, predict_spam
 from crud import create_user, create_message
-from spf_dkim_checker import check_email_authentication
+from spf_dkim_checker import check_email_authentication, get_domain_from_email
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -28,7 +28,7 @@ class EmailData(BaseModel):
     text: str
     user: str  
     message_id: str
-    dkim_selector: str
+    dkim_selector: str | None = None 
     sender: str
 
 # Endpoint for health check
@@ -65,37 +65,37 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
         prediction = predict_spam(model, tokenizer, data.text)
         message = create_message(db, user.id, data.message_id, str(prediction))
 
-    # Get the SPF and DKIM authentication status for the sender domain, using the provided DKIM selector
+    # Get the SPF and DKIM authentication status
     spf_valid, dkim_valid = check_email_authentication(data.sender, data.dkim_selector)
 
     # Classify the email based on the prediction score and authentication checks
     prediction_score = float(message.analysis)
-    if prediction_score < 0.2:
-        # Safe emails should still be labeled suspicious if SPF or DKIM fail
-        if not spf_valid or not dkim_valid:
-            spam_label = 'suspicious'
-        else:
-            spam_label = 'safe'
-    elif prediction_score < 0.8:
-        # Suspicious emails are upgraded to high risk if both SPF and DKIM fail
-        if not spf_valid and not dkim_valid:
-            spam_label = 'high risk'
-        else:
-            spam_label = 'suspicious'
-    else:
-        # High-risk emails remain high risk, but log the cause if SPF or DKIM pass
-        if spf_valid or dkim_valid:
-            spam_label = 'high risk'
-        else:
-            spam_label = 'high risk'
+    
+    # Extract domain for checking if it's a personal email
+    sender_domain = get_domain_from_email(data.sender)
+    is_personal_email = not data.dkim_selector  # Consider emails without DKIM selector as personal
 
-    # If SPF or DKIM fails, set the label to high risk
-    if not spf_valid or not dkim_valid:
-        spam_label = 'high risk'
+    if prediction_score < 0.2:
+        # For personal emails, only check SPF
+        if is_personal_email:
+            spam_label = 'suspicious' if not spf_valid else 'safe'
+        else:
+            # For organizational emails, check both SPF and DKIM
+            spam_label = 'suspicious' if not spf_valid or not dkim_valid else 'safe'
+    elif prediction_score < 0.8:
+        spam_label = 'suspicious'
+    else:
+        if is_personal_email:
+            # For personal emails, high risk only if SPF fails
+            spam_label = 'high risk' if not spf_valid else 'suspicious'
+        else:
+            # For organizational emails, check both
+            spam_label = 'high risk' if not spf_valid or not dkim_valid else 'suspicious'
 
     return {
         "prediction": str(prediction_score),
         "label": spam_label,
         "spf_valid": str(spf_valid),
-        "dkim_valid": str(dkim_valid)
+        "dkim_valid": str(dkim_valid),
+        "is_personal_email": str(is_personal_email)
     }
