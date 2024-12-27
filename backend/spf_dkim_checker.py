@@ -18,12 +18,10 @@ def check_spf(domain):
     except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
         return False, None
 
-def check_dkim(domain):
-    """Checks the DKIM record for a given domain."""
+def check_dkim(domain, selector):
+    """Checks the DKIM record for a given domain and selector."""
     try:
-        # DKIM records are typically prefixed with a selector (google._domainkey, etc.)
-        # We'll use a common selector prefix, but you may want to make this more dynamic
-        selector = 'google'  # This could be different depending on the domain
+        # Use the provided DKIM selector to form the DKIM domain
         dkim_domain = f"{selector}._domainkey.{domain}"
         result = dns.resolver.resolve(dkim_domain, 'TXT')
         if result:
@@ -33,7 +31,7 @@ def check_dkim(domain):
     except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
         return False, None
 
-def check_email_authentication(email):
+def check_email_authentication(email, dkim_selector):
     """Checks both SPF and DKIM records for a given email address."""
     domain = get_domain_from_email(email)
 
@@ -44,8 +42,8 @@ def check_email_authentication(email):
     else:
         print(f"No valid SPF record found for {domain}")
 
-    # Check DKIM
-    dkim_valid, dkim_records = check_dkim(domain)
+    # Check DKIM using the provided selector
+    dkim_valid, dkim_records = check_dkim(domain, dkim_selector)
     if dkim_valid:
         print(f"DKIM Records for {domain}: {dkim_records}")
     else:
@@ -53,11 +51,3 @@ def check_email_authentication(email):
 
     # Return results
     return spf_valid, dkim_valid
-
-# # Example usage
-# email = 'user@legitdomain.com'
-# spf_valid, dkim_valid = check_email_authentication(email)
-# if spf_valid and dkim_valid:
-#     print("The email domain is properly authenticated with SPF and DKIM.")
-# else:
-#     print("The email domain failed SPF or DKIM checks.")
