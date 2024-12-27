@@ -23,12 +23,18 @@ def check_dkim(domain, selector):
     try:
         # Use the provided DKIM selector to form the DKIM domain
         dkim_domain = f"{selector}._domainkey.{domain}"
+        print(f"Checking DKIM for domain: {dkim_domain}")
         result = dns.resolver.resolve(dkim_domain, 'TXT')
+
         if result:
-            return True, [str(record) for record in result]
+            dkim_records = [str(record) for record in result]
+            print(f"DKIM Records found for {dkim_domain}: {dkim_records}")
+            return True, dkim_records
         else:
+            print(f"No DKIM records found for {dkim_domain}")
             return False, None
-    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
+    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN) as e:
+        print(f"Error resolving DKIM for {domain} with selector {selector}: {e}")
         return False, None
 
 def check_email_authentication(email, dkim_selector):

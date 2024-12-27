@@ -29,6 +29,7 @@ class EmailData(BaseModel):
     user: str  
     message_id: str
     dkim_selector: str
+    sender: str
 
 # Endpoint for health check
 @app.get("/health")
@@ -65,24 +66,36 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
         message = create_message(db, user.id, data.message_id, str(prediction))
 
     # Get the SPF and DKIM authentication status for the sender domain, using the provided DKIM selector
-    spf_valid, dkim_valid = check_email_authentication(data.user, data.dkim_selector)
+    spf_valid, dkim_valid = check_email_authentication(data.sender, data.dkim_selector)
 
     # Classify the email based on the prediction score and authentication checks
     prediction_score = float(message.analysis)
     if prediction_score < 0.2:
-        spam_label = 'safe'
+        # Safe emails should still be labeled suspicious if SPF or DKIM fail
+        if not spf_valid or not dkim_valid:
+            spam_label = 'suspicious'
+        else:
+            spam_label = 'safe'
     elif prediction_score < 0.8:
-        spam_label = 'suspicious'
+        # Suspicious emails are upgraded to high risk if both SPF and DKIM fail
+        if not spf_valid and not dkim_valid:
+            spam_label = 'high risk'
+        else:
+            spam_label = 'suspicious'
     else:
-        spam_label = 'high risk'
+        # High-risk emails remain high risk, but log the cause if SPF or DKIM pass
+        if spf_valid or dkim_valid:
+            spam_label = 'high risk'
+        else:
+            spam_label = 'high risk'
 
     # If SPF or DKIM fails, set the label to high risk
     if not spf_valid or not dkim_valid:
         spam_label = 'high risk'
 
     return {
-        "prediction": prediction_score,
+        "prediction": str(prediction_score),
         "label": spam_label,
-        "spf_valid": spf_valid,
-        "dkim_valid": dkim_valid
+        "spf_valid": str(spf_valid),
+        "dkim_valid": str(dkim_valid)
     }
