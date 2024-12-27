@@ -177,6 +177,7 @@ function getMessageBody() {
       console.log("Final Processed Message Body:", messageBody);
 
       const dkimSelector = extractDkimSelector(messageData);
+      const sender = getSender(messageData);
       // Send POST request using fetch
       fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
@@ -188,6 +189,7 @@ function getMessageBody() {
           user: "example@mail.com",
           message_id: messageId,
           dkim_selector: dkimSelector,
+          sender: sender,
         }),
       })
         .then((response) => response.json())
@@ -288,4 +290,17 @@ function extractDkimSelector(messageData) {
 
   console.log("Could not extract selector from DKIM signature");
   return null;
+}
+
+function getSender(messageData) {
+  const fromHeader = messageData.payload.headers.find(
+    (header) => header.name.toLowerCase() === "from"
+  );
+
+  if (fromHeader) {
+    const match = fromHeader.value.match(/<([^>]+)>/); // Extract the email address
+    return match ? match[1] : fromHeader.value; // Return the email or the full value if no <>
+  }
+
+  return null; // If no "From" header found
 }
