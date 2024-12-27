@@ -178,7 +178,9 @@ function getMessageBody() {
 
       const dkimSelector = extractDkimSelector(messageData);
       const sender = getSender(messageData);
-      // Send POST request using fetch
+      const { hasAttachments, hasLinks } =
+        checkForAttachmentsAndLinks(messageBody);
+
       fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         headers: {
@@ -190,6 +192,8 @@ function getMessageBody() {
           message_id: messageId,
           dkim_selector: dkimSelector || null,
           sender: sender,
+          has_attachments: hasAttachments,
+          hasLinks: hasLinks,
         }),
       })
         .then((response) => response.json())
@@ -303,4 +307,19 @@ function getSender(messageData) {
   }
 
   return null; // If no "From" header found
+}
+
+function checkForAttachmentsAndLinks(messageData) {
+  const hasAttachments =
+    messageData.payload.parts?.some(
+      (part) => part.filename && part.filename.length > 0
+    ) || false;
+
+  // Check for links in the message body
+  const hasLinks =
+    messageData.snippet.includes("http") ||
+    messageData.snippet.includes("www.") ||
+    messageData.snippet.includes("https");
+
+  return { hasAttachments, hasLinks };
 }

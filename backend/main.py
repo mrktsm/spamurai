@@ -30,6 +30,8 @@ class EmailData(BaseModel):
     message_id: str
     dkim_selector: str | None = None 
     sender: str
+    has_attachments: bool = False
+    has_links: bool = False
 
 # Endpoint for health check
 @app.get("/health")
@@ -92,10 +94,19 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
             # For organizational emails, check both
             spam_label = 'high risk' if not spf_valid or not dkim_valid else 'suspicious'
 
+    malicious_content = "none"
+    if spam_label == 'suspicious':
+        if data.hasAttachments or data.hasLinks:
+            malicious_content = "suspicious"
+    elif spam_label == 'high risk':
+        if data.hasAttachments or data.hasLinks:
+            malicious_content = "detected"
+
     return {
         "prediction": str(prediction_score),
         "label": spam_label,
         "spf_valid": str(spf_valid),
         "dkim_valid": str(dkim_valid),
-        "is_personal_email": str(is_personal_email)
+        "is_personal_email": str(is_personal_email),
+        "malicious_content": str(malicious_content)
     }
