@@ -96,10 +96,10 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
 
     malicious_content = "none"
     if spam_label == 'suspicious':
-        if data.hasAttachments or data.hasLinks:
+        if data.has_attachments or data.has_links:
             malicious_content = "suspicious"
     elif spam_label == 'high risk':
-        if data.hasAttachments or data.hasLinks:
+        if data.has_attachments or data.has_links:
             malicious_content = "detected"
 
     return {
