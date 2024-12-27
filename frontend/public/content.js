@@ -176,13 +176,19 @@ function getMessageBody() {
 
       console.log("Final Processed Message Body:", messageBody);
 
+      const dkimSelector = extractDkimSelector(messageData);
       // Send POST request using fetch
       fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: messageBody }),
+        body: JSON.stringify({
+          text: messageBody,
+          user: "example@mail.com",
+          message_id: messageId,
+          dkim_selector: dkimSelector,
+        }),
       })
         .then((response) => response.json())
         .then((result) => {
@@ -254,4 +260,32 @@ function debugBase64Decoding(encodedData) {
   if (encodedData.includes("\n")) {
     console.warn("Encoded data contains newline");
   }
+}
+
+function extractDkimSelector(messageData) {
+  // Get headers from the message data
+  const headers = messageData.payload.headers;
+
+  // Find the DKIM-Signature header
+  const dkimHeader = headers.find(
+    (h) => h.name.toLowerCase() === "dkim-signature"
+  );
+
+  if (!dkimHeader) {
+    console.log("No DKIM signature found");
+    return null;
+  }
+
+  // Extract selector from the signature
+  // DKIM-Signature format includes "s=selector;" somewhere in the string
+  const selectorMatch = dkimHeader.value.match(/s=([^;]+)/);
+
+  if (selectorMatch && selectorMatch[1]) {
+    const selector = selectorMatch[1].trim();
+    console.log("Found DKIM selector:", selector);
+    return selector;
+  }
+
+  console.log("Could not extract selector from DKIM signature");
+  return null;
 }
