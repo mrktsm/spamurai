@@ -22,10 +22,13 @@
       "js": ["iframeDialog.js", "content.js", "dashboard.js"]
     }
   ],
-  "permissions": ["scripting", "activeTab", "identity"],
+  "permissions": ["scripting", "activeTab", "identity", "identity.email"],
   "oauth2": {
     "client_id": "1089158818812-2ig71e74oqggjhd3golvstjvhf1supoc.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/gmail.readonly"]
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
   },
   "web_accessible_resources": [
     {

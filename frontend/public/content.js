@@ -89,6 +89,23 @@ function getMessageBody() {
 
     try {
       // Fetch the message details
+      const userInfoResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!userInfoResponse.ok) {
+        throw new Error(`Error fetching user info: ${userInfoResponse.status}`);
+      }
+
+      const userInfo = await userInfoResponse.json();
+      const userId = userInfo.sub; // `sub` is the unique identifier for the user
+      console.log("User ID:", userId);
+
       const response = await fetch(
         `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
         {
@@ -188,7 +205,7 @@ function getMessageBody() {
         },
         body: JSON.stringify({
           text: messageBody,
-          user: "example@mail.com",
+          user: userId,
           message_id: messageId,
           dkim_selector: dkimSelector || null,
           sender: sender,
