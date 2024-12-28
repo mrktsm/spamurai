@@ -58,9 +58,9 @@ export default function ActionBar() {
 
     let newDynamicWidth = 65;
 
-    if (percentage > 35 && percentage <= 80) {
+    if (statusText === "Suspicious") {
       newDynamicWidth = 103;
-    } else if (percentage > 80) {
+    } else if (statusText == "High Risk") {
       newDynamicWidth = 93;
     }
 
