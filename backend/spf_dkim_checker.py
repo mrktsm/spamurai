@@ -48,7 +48,7 @@ def check_email_authentication(email, dkim_selector):
     else:
         print(f"No valid SPF record found for {domain}")
 
-    # Only check DKIM if a selector is provided (typically for organizational emails)
+        # Only check DKIM if a selector is provided (typically for organizational emails)
     if dkim_selector:
         dkim_valid, dkim_records = check_dkim(domain, dkim_selector)
         if dkim_valid:

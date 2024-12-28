@@ -33,6 +33,23 @@ class EmailData(BaseModel):
     has_attachments: bool = False
     has_links: bool = False
 
+class SpamAnalysisResponse(BaseModel):
+    spam_score: float
+    spam_label: str
+    text_length: int
+    attachments: bool
+    links: bool
+    spf_valid: bool
+    dkim_valid: bool
+    sender_domain: str
+    is_personal_email: bool
+    malicious_content: str
+
+    class Config:
+        # Allow ORM models to work directly with Pydantic models
+        orm_mode = True
+
+
 # Endpoint for health check
 @app.get("/health")
 async def health_check() -> dict[str, str]:
@@ -54,7 +71,7 @@ async def db_health_check(db: Session = Depends(get_db)):
         return {"status": "error", "message": str(e)}
 
 @app.post("/predict")
-async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[str, str]:
+async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamAnalysisResponse:
     # Check if the message already exists
     message = db.query(models.Message).filter(models.Message.message_id == data.message_id).first()
     if message:
@@ -68,6 +85,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
 
     # Predict spam score
     prediction_score = predict_spam(model, tokenizer, data.text)
+    prediction_score = float(prediction_score)
 
     # Get the SPF and DKIM authentication status
     spf_valid, dkim_valid = check_email_authentication(data.sender, data.dkim_selector)
@@ -121,4 +139,4 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
     message = create_message(db, user.id, data.message_id, full_analysis)
 
     # Return the newly created analysis
-    return full_analysis
+    return SpamAnalysisResponse(**full_analysis)
