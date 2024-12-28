@@ -9,19 +9,35 @@ export default function ActionBar() {
   const [statusText, setStatusText] = useState<string>("Safe");
   const [statusColor, setStatusColor] = useState<string>("text-green-500");
   const [dynamicWidth, setDynamicWidth] = useState<number>(20); // Default width
+  // Store the entire payload
+  const [payload, setPayload] = useState<any>(null);
 
   const [predictionReceived, setPredictionReceived] = useState<boolean>(false);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "PREDICTION_RESULT") {
-        const { prediction } = event.data.payload;
-        const newPercentage = prediction * 100;
+        const { spam_score, spam_label } = event.data.payload;
+        const newPercentage = spam_score * 100;
+        setPayload(event.data.payload);
 
         setPredictionReceived(true);
 
         setLoaded(true);
         setLoadCircle(false);
+
+        let newStatusText = spam_label || "Safe"; // Default to "Safe" if no label is provided
+        let newStatusColor = "text-green-500"; // Default color
+
+        // Change color based on spam_label
+        if (newStatusText === "Suspicious") {
+          newStatusColor = "text-yellow-500";
+        } else if (newStatusText === "High Risk") {
+          newStatusColor = "text-red-500 font-bold";
+        }
+
+        setStatusText(newStatusText);
+        setStatusColor(newStatusColor);
 
         // Set the new percentage
         setPercentage(newPercentage);
@@ -36,30 +52,18 @@ export default function ActionBar() {
   }, []);
 
   // Update statusText, statusColor, and dynamicWidth based on the percentage
+
   useEffect(() => {
     if (!predictionReceived) return;
 
-    let newStatusText = "Safe";
-    let newStatusColor = "text-green-500";
     let newDynamicWidth = 65;
 
-    if (percentage <= 35) {
-      newStatusText = "Safe";
-      newStatusColor = "text-green-500";
-      newDynamicWidth = 65;
-    } else if (percentage > 35 && percentage <= 80) {
-      newStatusText = "Suspicious";
-      newStatusColor = "text-yellow-500";
+    if (percentage > 35 && percentage <= 80) {
       newDynamicWidth = 103;
-    } else {
-      newStatusText = "High Risk";
-      newStatusColor = "text-red-500 font-bold";
+    } else if (percentage > 80) {
       newDynamicWidth = 93;
     }
 
-    // Update the state values
-    setStatusText(newStatusText);
-    setStatusColor(newStatusColor);
     setDynamicWidth(newDynamicWidth);
 
     // Send updated dynamicWidth to parent
@@ -77,10 +81,7 @@ export default function ActionBar() {
     window.parent.postMessage(
       {
         type: "OPEN_DASHBOARD_DIALOG",
-        payload: {
-          prediction: percentage,
-          status: statusText,
-        },
+        payload: payload,
       },
       "*"
     );
