@@ -179,7 +179,7 @@ function getMessageBody() {
       const dkimSelector = extractDkimSelector(messageData);
       const sender = getSender(messageData);
       const { hasAttachments, hasLinks } =
-        checkForAttachmentsAndLinks(messageBody);
+        checkForAttachmentsAndLinks(messageData);
 
       fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
