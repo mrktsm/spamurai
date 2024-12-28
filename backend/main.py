@@ -55,28 +55,28 @@ async def db_health_check(db: Session = Depends(get_db)):
 
 @app.post("/predict")
 async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[str, str]:
+    # Check if the message already exists
+    message = db.query(models.Message).filter(models.Message.message_id == data.message_id).first()
+    if message:
+        # Return the existing analysis immediately
+        return message.analysis
+
     # Check if the user exists, create if not
-    user = db.query(models.User).filter(models.User.email == data.user).first()
+    user = db.query(models.User).filter(models.User.userid == data.user).first()
     if not user:
         user = create_user(db, data.user)
 
-    # Check if the message exists, create if not
-    message = db.query(models.Message).filter(models.Message.message_id == data.message_id).first()
-    if not message:
-        # Predict spam score
-        prediction = predict_spam(model, tokenizer, data.text)
-        message = create_message(db, user.id, data.message_id, str(prediction))
+    # Predict spam score
+    prediction_score = predict_spam(model, tokenizer, data.text)
 
     # Get the SPF and DKIM authentication status
     spf_valid, dkim_valid = check_email_authentication(data.sender, data.dkim_selector)
 
-    # Classify the email based on the prediction score and authentication checks
-    prediction_score = float(message.analysis)
-    
-    # Extract domain for checking if it's a personal email
+    # Extract domain and determine if it's a personal email
     sender_domain = get_domain_from_email(data.sender)
-    is_personal_email = not data.dkim_selector  # Consider emails without DKIM selector as personal
+    is_personal_email = not data.dkim_selector  # Emails without DKIM selector are considered personal
 
+    # Determine spam label
     if prediction_score < 0.2:
         # For personal emails, only check SPF
         if is_personal_email:
@@ -94,6 +94,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
             # For organizational emails, check both
             spam_label = 'high risk' if not spf_valid or not dkim_valid else 'suspicious'
 
+    # Identify malicious content based on label and email attributes
     malicious_content = "none"
     if spam_label == 'suspicious':
         if data.has_attachments or data.has_links:
@@ -102,11 +103,22 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> dict[
         if data.has_attachments or data.has_links:
             malicious_content = "detected"
 
-    return {
-        "prediction": str(prediction_score),
-        "label": spam_label,
-        "spf_valid": str(spf_valid),
-        "dkim_valid": str(dkim_valid),
-        "is_personal_email": str(is_personal_email),
-        "malicious_content": str(malicious_content)
+    # Full analysis document
+    full_analysis = {
+        "spam_score": prediction_score,
+        "spam_label": spam_label,
+        "text_length": len(data.text),
+        "attachments": data.has_attachments,
+        "links": data.has_links,
+        "spf_valid": spf_valid,
+        "dkim_valid": dkim_valid,
+        "sender_domain": sender_domain,
+        "is_personal_email": is_personal_email,
+        "malicious_content": malicious_content,
     }
+
+    # Save the full analysis to the database
+    message = create_message(db, user.id, data.message_id, full_analysis)
+
+    # Return the newly created analysis
+    return full_analysis
