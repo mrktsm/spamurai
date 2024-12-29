@@ -3,6 +3,7 @@ function injectModal() {
   const dialog = document.createElement("dialog");
   dialog.style.width = "576px";
   dialog.style.height = "492.5px";
+  dialog.style.borderRadius = "16px";
   dialog.id = "oauth-modal";
   dialog.style.padding = "0";
   dialog.style.position = "fixed";
@@ -40,10 +41,15 @@ function injectModal() {
 let modalInjected = false;
 
 const modalObserver = new MutationObserver((mutationsList, observer) => {
-  if (!modalInjected) {
-    injectModal();
-    modalInjected = true;
-    observer.disconnect(); // Stop observing after the first injection
+  if (!modalInjected && localStorage.getItem("isAuthenticated") !== "true") {
+    chrome.storage.local.get("isAuthenticated", (result) => {
+      if (result.isAuthenticated !== "true") {
+        console.log(result.isAuthenticated);
+        injectModal();
+        modalInjected = true;
+        observer.disconnect(); // Stop observing after the first injection
+      }
+    });
   }
 });
 

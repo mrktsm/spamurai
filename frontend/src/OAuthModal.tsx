@@ -32,16 +32,19 @@ function OAuthModal() {
       console.log("Authenticated successfully, token: ", token);
 
       // Store the token in localStorage to mark the user as authenticated
-      localStorage.setItem("isAuthenticated", "true");
-      console.log("User authenticated and localStorage updated.");
+      chrome.storage.local.set({ isAuthenticated: "true" }, () => {
+        console.log("Authentication status:", "true");
+        console.log("User authenticated and chrome.storage.local updated.");
 
-      window.parent.postMessage({ action: "closeModal" }, "*");
+        // Send a message to close the modal
+        window.parent.postMessage({ action: "closeModal" }, "*");
+      });
     });
   };
 
   return (
     <div
-      className="flex flex-col items-center justify-center px-10 h-96 text-center bg-gradient-to-r from-red-400 to-red-600 text-white"
+      className="flex rounded-2xl flex-col items-center justify-center px-10 h-96 text-center bg-gradient-to-r from-red-400 to-red-600 text-white"
       style={{ height: "492.5px", width: "576px" }}
     >
       <img
