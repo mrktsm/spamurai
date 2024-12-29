@@ -54,6 +54,16 @@ export default function ActionBar() {
   // Update statusText, statusColor, and dynamicWidth based on the percentage
 
   useEffect(() => {
+    chrome.storage.local.get("isAuthenticated", (result) => {
+      if (result.isAuthenticated !== "true") {
+        // If not authenticated, set progress circle to 0 and stop loading
+        setPercentage(0);
+        setLoadCircle(false);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     if (!predictionReceived) return;
 
     let newDynamicWidth = 65;
