@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
@@ -6,6 +6,20 @@ import ProgressCircle from "./ProgressCircle";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [predictionData, setPredictionData] = useState(null);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "DASHBOARD_PREDICTION_DATA") {
+        setPredictionData(event.data.payload);
+        console.log(predictionData);
+        console.log(event.data.payload);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   // Sample data for spam emails over last 7 days
   const spamData = [

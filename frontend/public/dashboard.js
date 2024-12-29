@@ -39,6 +39,16 @@ window.addEventListener("message", (event) => {
         // Append iframe to the iframeContainer
         iframeContainer.appendChild(dashboardIframe);
 
+        dashboardIframe.onload = () => {
+          dashboardIframe.contentWindow.postMessage(
+            {
+              type: "DASHBOARD_PREDICTION_DATA",
+              payload: event.data.payload, // Pass through the prediction data
+            },
+            "*"
+          );
+        };
+
         // Add event listener to close the iframe when clicking outside
         const closeIframeOnClickOutside = (e) => {
           if (!dashboardIframe.contains(e.target)) {

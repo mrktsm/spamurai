@@ -98,28 +98,28 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
     if prediction_score < 0.2:
         # For personal emails, only check SPF
         if is_personal_email:
-            spam_label = 'suspicious' if not spf_valid else 'safe'
+            spam_label = 'Suspicious' if not spf_valid else 'Safe'
         else:
             # For organizational emails, check both SPF and DKIM
-            spam_label = 'suspicious' if not spf_valid or not dkim_valid else 'safe'
+            spam_label = 'Suspicious' if not spf_valid or not dkim_valid else 'Safe'
     elif prediction_score < 0.8:
-        spam_label = 'suspicious'
+        spam_label = 'Suspicious'
     else:
         if is_personal_email:
             # For personal emails, high risk only if SPF fails
-            spam_label = 'high risk' if not spf_valid else 'suspicious'
+            spam_label = 'High Risk' if not spf_valid else 'Suspicious'
         else:
             # For organizational emails, check both
-            spam_label = 'high risk' if not spf_valid or not dkim_valid else 'suspicious'
+            spam_label = 'High Risk' if not spf_valid or not dkim_valid else 'Suspicious'
 
     # Identify malicious content based on label and email attributes
-    malicious_content = "none"
-    if spam_label == 'suspicious':
+    malicious_content = "None"
+    if spam_label == 'Suspicious':
         if data.has_attachments or data.has_links:
-            malicious_content = "suspicious"
-    elif spam_label == 'high risk':
+            malicious_content = "Suspicious"
+    elif spam_label == 'High Risk':
         if data.has_attachments or data.has_links:
-            malicious_content = "detected"
+            malicious_content = "Detected"
 
     # Full analysis document
     full_analysis = {
