@@ -155,14 +155,18 @@ const Dashboard = () => {
                       predictionData
                         ? predictionData.spam_score < 0.2
                           ? "text-green-500"
+                          : predictionData.spam_score < 0.8
+                          ? "text-yellow-500"
                           : "text-red-500"
                         : "text-gray-400"
                     }`}
                   >
                     {predictionData
                       ? predictionData.spam_score < 0.2
-                        ? "Passed"
-                        : "Failed"
+                        ? "Clear"
+                        : predictionData.spam_score < 0.8
+                        ? "Warning"
+                        : "Critical"
                       : "Loading..."}
                   </span>
                 </div>
