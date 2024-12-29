@@ -4,16 +4,29 @@ import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, ResponsiveContainer } from "recharts";
 import ProgressCircle from "./ProgressCircle";
 
+type PredictionData = {
+  spam_score: number;
+  spam_label: string;
+  text_length: number;
+  attachments: boolean;
+  links: boolean;
+  spf_valid: boolean;
+  dkim_valid: boolean;
+  sender_domain: string;
+  is_personal_email: boolean;
+  malicious_content: string;
+};
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [predictionData, setPredictionData] = useState(null);
+  const [predictionData, setPredictionData] = useState<PredictionData | null>(
+    null
+  );
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "DASHBOARD_PREDICTION_DATA") {
         setPredictionData(event.data.payload);
-        console.log(predictionData);
-        console.log(event.data.payload);
       }
     };
 
@@ -113,20 +126,64 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-medium">Email Safety</h3>
-                <span className="font-bold text-green-400 text-lg">Safe</span>
+                <span
+                  className={`font-medium ${
+                    predictionData?.spam_label === "Safe"
+                      ? "text-green-500"
+                      : predictionData?.spam_label === "Suspicious"
+                      ? "text-yellow-500"
+                      : "text-red-500"
+                  } text-lg`}
+                >
+                  {predictionData && predictionData.spam_label
+                    ? predictionData.spam_label
+                    : "Loading..."}
+                </span>
               </div>
               <div className="space-y-2">
                 <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                   <span className="text-gray-300">Spam Check</span>
-                  <span className="font-bold text-green-400"> Passed </span>
+                  <span
+                    className={`font-bold ${
+                      predictionData
+                        ? predictionData.spam_score < 0.2
+                          ? "text-green-500"
+                          : "text-red-500"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {predictionData
+                      ? predictionData.spam_score < 0.2
+                        ? "Passed"
+                        : "Failed"
+                      : "Loading..."}
+                  </span>
                 </div>
                 <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                   <span className="text-gray-300">Sender Trust</span>
-                  <span className="font-bold text-blue-400">Trusted</span>
+                  <span
+                    className={`font-bold ${
+                      predictionData?.spf_valid && predictionData.dkim_valid
+                        ? "text-blue-400"
+                        : "text-yellow-500"
+                    }`}
+                  >
+                    {predictionData?.spf_valid && predictionData.dkim_valid
+                      ? "Trusted"
+                      : "Not Verified"}
+                  </span>
                 </div>
                 <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                   <span className="text-gray-300">Malicious content</span>
-                  <span className="font-bold text-green-400">None</span>
+                  <span
+                    className={`font-bold ${
+                      predictionData?.malicious_content === "None"
+                        ? "text-blue-400"
+                        : "text-yellow-500"
+                    }`}
+                  >
+                    {predictionData?.malicious_content}
+                  </span>
                 </div>
               </div>
             </motion.div>
