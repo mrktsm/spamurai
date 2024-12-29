@@ -59,7 +59,11 @@ const Dashboard = () => {
         {/* Progress Circle */}
         <div className="flex justify-center relative">
           <ProgressCircle
-            percentage={90}
+            percentage={
+              predictionData?.spam_score
+                ? Math.round(predictionData.spam_score * 100)
+                : 0
+            }
             isLoading={false}
             radius={70}
             strokeWidth={15}
@@ -68,7 +72,10 @@ const Dashboard = () => {
             className="absolute inset-0 flex items-center justify-center text-white text-3xl font-semibold"
             style={{ fontFamily: "'Comfortaa', sans-serif" }}
           >
-            34%
+            {predictionData?.spam_score
+              ? Math.round(predictionData.spam_score * 100)
+              : 0}
+            %
           </div>
         </div>
 
