@@ -29,12 +29,13 @@ function OAuthModal() {
         );
         return;
       }
-      console.log(token);
-      // Store the token in local storage for later use
-      // chrome.storage.local.set({ access_token: token }, () => {
-      //   console.log("Access token stored successfully");
-      //   // Optionally, you can add a callback or UI update here
-      // });
+      console.log("Authenticated successfully, token: ", token);
+
+      // Store the token in localStorage to mark the user as authenticated
+      localStorage.setItem("isAuthenticated", "true");
+      console.log("User authenticated and localStorage updated.");
+
+      window.parent.postMessage({ action: "closeModal" }, "*");
     });
   };
 

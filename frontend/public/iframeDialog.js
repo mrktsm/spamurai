@@ -36,14 +36,28 @@ function injectModal() {
   dialog.showModal();
 }
 
+// MutationObserver to inject the modal
 let modalInjected = false;
 
 const modalObserver = new MutationObserver((mutationsList, observer) => {
   if (!modalInjected) {
     injectModal();
     modalInjected = true;
-    observer.disconnect(); // Stop observing after first injection
+    observer.disconnect(); // Stop observing after the first injection
   }
 });
 
 modalObserver.observe(document.body, { childList: true, subtree: true });
+
+// Listen for messages to close the modal
+window.addEventListener("message", (event) => {
+  // Verify the message comes from the expected origin (you can restrict this to improve security)
+  if (event.data.action === "closeModal") {
+    const modal = document.querySelector("#oauth-modal");
+    if (modal) {
+      modal.close();
+      modal.remove();
+      console.log("Modal closed successfully.");
+    }
+  }
+});
