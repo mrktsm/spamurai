@@ -28,8 +28,11 @@ function addButtonNextToDate() {
 
     wrapper.appendChild(iframe);
     dateElement.parentNode.insertBefore(wrapper, dateElement);
-
-    getMessageBody();
+    chrome.storage.local.get("isAuthenticated", (result) => {
+      if (result.isAuthenticated === "true") {
+        getMessageBody();
+      }
+    });
   }
 }
 
