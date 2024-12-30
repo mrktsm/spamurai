@@ -55,7 +55,7 @@ const Dashboard = () => {
         border: "1px solid grey",
       }}
     >
-      <div className="flex items-center space-x-4 w-full">
+      <div className="flex items-center space-x-4 w-full justify-center">
         {/* Progress Circle */}
         <div className="flex justify-center relative">
           <ProgressCircle
@@ -69,13 +69,18 @@ const Dashboard = () => {
             strokeWidth={15}
           />
           <div
-            className="absolute inset-0 flex items-center justify-center text-white text-3xl font-semibold"
+            className="absolute inset-0 flex flex-col items-center justify-center text-white text-3xl font-semibold"
             style={{ fontFamily: "'Comfortaa', sans-serif" }}
           >
-            {predictionData?.spam_score
-              ? Math.round(predictionData.spam_score * 100)
-              : 0}
-            %
+            <span className="mt-2">
+              {predictionData?.spam_score
+                ? Math.round(predictionData.spam_score * 100)
+                : 0}
+              %
+            </span>
+            <span style={{ fontSize: "10px", marginTop: "-8px" }}>
+              AI Spam Score
+            </span>
           </div>
         </div>
 
