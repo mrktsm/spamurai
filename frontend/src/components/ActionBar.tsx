@@ -114,6 +114,7 @@ export default function ActionBar() {
       {loaded && (
         <div
           className={`font-medium ${statusColor} flex items-center justify-center pr-2`}
+          style={{ whiteSpace: "nowrap" }}
         >
           {statusText}
         </div>
