@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons"; // Import the GitHub icon
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Switch from "./components/Switch";
 
 function App() {
-  const [definitionEnabled, setDefinitionEnabled] = useState(true);
-  const [playSoundEnabled, setPlaySoundEnabled] = useState(false);
+  const [protectionEnabled, setProtectionEnabled] = useState(true);
+  const [popupEnabled, setPopupEnabled] = useState(false);
 
   return (
     <div className="bg-zinc-800 text-white overflow-hidden">
@@ -41,8 +42,8 @@ function App() {
               <span className="text-sm text-gray-100">Protection Mode</span>
               <div className="ml-auto">
                 <Switch
-                  isOn={definitionEnabled}
-                  handleToggle={() => setDefinitionEnabled(!definitionEnabled)}
+                  isOn={protectionEnabled}
+                  handleToggle={() => setProtectionEnabled(!protectionEnabled)}
                 />
               </div>
             </div>
@@ -61,8 +62,8 @@ function App() {
               </span>
               <div className="ml-auto">
                 <Switch
-                  isOn={playSoundEnabled}
-                  handleToggle={() => setPlaySoundEnabled(!playSoundEnabled)}
+                  isOn={popupEnabled}
+                  handleToggle={() => setPopupEnabled(!popupEnabled)}
                 />
               </div>
             </div>
@@ -72,7 +73,25 @@ function App() {
           </div>
         </div>
       </div>
-      {/* Settings */}
+      {/* Footer */}
+      <div className="w-full">
+        <footer className="bg-zinc-900 flex justify-between items-center p-3 mt-4">
+          <div className="flex items-center">
+            <h1 className="text-sm text-left font-semibold text-rose-300 ml-2">
+              *****
+            </h1>
+          </div>
+          {/* GitHub Icon in the footer, aligned to the right */}
+          <a
+            href="https://github.com/mrktsm/spamurai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-rose-300 transform transition-all duration-300 hover:text-rose-500 hover:scale-105"
+          >
+            <FontAwesomeIcon icon={faHeart} className="w-5 h-5 mr-2" />
+          </a>
+        </footer>
+      </div>
     </div>
   );
 }
