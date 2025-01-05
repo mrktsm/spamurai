@@ -79,7 +79,7 @@ const Dashboard = () => {
           }
 
           return {
-            day: new Date(stat.date).toLocaleDateString("en-US", {
+            day: new Date(`${stat.date}T12:00:00`).toLocaleDateString("en-US", {
               weekday: "short",
             }),
             spamCount: stat.spam_count,
