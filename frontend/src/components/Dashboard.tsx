@@ -30,6 +30,7 @@ const Dashboard = () => {
     null
   );
   const [spamStats, setSpamStats] = useState<SpamStats[]>([]);
+  const [improvementRate, setImprovementRate] = useState("");
   // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -108,6 +109,51 @@ const Dashboard = () => {
       });
 
       setSpamStats(fallbackData);
+    }
+  };
+
+  useEffect(() => {
+    const updateImprovementRate = async () => {
+      if (predictionData?.user_id) {
+        try {
+          const improvementData = await fetchImprovementRate(
+            predictionData.user_id
+          );
+          if (
+            improvementData &&
+            improvementData.improvement_rate !== undefined
+          ) {
+            setImprovementRate(
+              `${improvementData.improvement_rate.toFixed(2)}%`
+            );
+          } else {
+            setImprovementRate("No data available");
+          }
+        } catch (error) {
+          console.error("Error updating improvement rate:", error);
+          setImprovementRate("Error fetching data");
+        }
+      }
+    };
+
+    updateImprovementRate();
+  }, [predictionData]);
+
+  const fetchImprovementRate = async (userId: string) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/spam-stats/improvement-rate?user=${userId}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json(); // Parse JSON response
+      return data;
+    } catch (error) {
+      console.error("Error fetching improvement rate:", error);
+      throw error;
     }
   };
 
@@ -315,7 +361,9 @@ const Dashboard = () => {
               </div>
               <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                 <span className="text-gray-300"> Improvement Rate </span>
-                <span className="font-bold text-green-400">+56%</span>
+                <span className="font-bold text-green-400">
+                  {improvementRate}
+                </span>
               </div>
             </motion.div>
           </Tabs.Content>
