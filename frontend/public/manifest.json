@@ -8,10 +8,10 @@
     "default_popup": "index.html"
   },
   "icons": {
-    "16": "spamurai_red.png",
-    "32": "spamurai_red.png",
-    "48": "spamurai_red.png",
-    "128": "spamurai_png.png"
+    "16": "test3.png",
+    "32": "test3.png",
+    "48": "test3.png",
+    "128": "spamurai_red.png"
   },
   "background": {
     "service_worker": "background.js"

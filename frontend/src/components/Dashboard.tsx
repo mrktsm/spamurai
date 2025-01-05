@@ -15,6 +15,13 @@ type PredictionData = {
   sender_domain: string;
   is_personal_email: boolean;
   malicious_content: string;
+  user_id: string;
+};
+
+type SpamStats = {
+  day: string;
+  spamCount: number;
+  date: string;
 };
 
 const Dashboard = () => {
@@ -22,11 +29,14 @@ const Dashboard = () => {
   const [predictionData, setPredictionData] = useState<PredictionData | null>(
     null
   );
+  const [spamStats, setSpamStats] = useState<SpamStats[]>([]);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "DASHBOARD_PREDICTION_DATA") {
         setPredictionData(event.data.payload);
+        console.log(event.data.payload.user_id);
       }
     };
 
@@ -34,16 +44,92 @@ const Dashboard = () => {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
+  useEffect(() => {
+    if (predictionData !== null) {
+      fetchSpamStats();
+    }
+  }, [predictionData]);
+
+  const fetchSpamStats = async () => {
+    try {
+      console.log("before fetch", predictionData?.user_id);
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/spam-stats/last-week?user=${predictionData?.user_id}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      console.log("API Response:", data); // Debug log
+
+      // Validate that data is an array
+      if (!Array.isArray(data)) {
+        console.error("Data is not an array:", data);
+        throw new Error("Invalid data format received from server");
+      }
+
+      // Transform the data for the chart
+      const transformedData = data
+        .map((stat: any) => {
+          // Ensure we have the required properties
+          if (!stat.date || typeof stat.spam_count === "undefined") {
+            console.error("Invalid stat object:", stat);
+            return null;
+          }
+
+          return {
+            day: new Date(stat.date).toLocaleDateString("en-US", {
+              weekday: "short",
+            }),
+            spamCount: stat.spam_count,
+            date: stat.date,
+          };
+        })
+        .filter((stat) => stat !== null); // Remove null values here
+
+      if (transformedData.length === 0) {
+        // Use fallback data if no valid data points
+        setSpamStats([
+          { day: "Mon", spamCount: 0, date: "2024-01-01" },
+          { day: "Tue", spamCount: 0, date: "2024-01-02" },
+          { day: "Wed", spamCount: 0, date: "2024-01-03" },
+          { day: "Thu", spamCount: 0, date: "2024-01-04" },
+          { day: "Fri", spamCount: 0, date: "2024-01-05" },
+          { day: "Sat", spamCount: 0, date: "2024-01-06" },
+          { day: "Sun", spamCount: 0, date: "2024-01-07" },
+        ]);
+      } else {
+        setSpamStats(transformedData);
+      }
+
+      // setError(null);
+    } catch (error) {
+      console.error("Failed to fetch spam statistics:", error);
+      // Set fallback data
+      setSpamStats([
+        { day: "Mon", spamCount: 0, date: "2024-01-01" },
+        { day: "Tue", spamCount: 0, date: "2024-01-02" },
+        { day: "Wed", spamCount: 0, date: "2024-01-03" },
+        { day: "Thu", spamCount: 0, date: "2024-01-04" },
+        { day: "Fri", spamCount: 0, date: "2024-01-05" },
+        { day: "Sat", spamCount: 0, date: "2024-01-06" },
+        { day: "Sun", spamCount: 0, date: "2024-01-07" },
+      ]);
+      // setError("Failed to load spam statistics");
+    }
+  };
+
   // Sample data for spam emails over last 7 days
-  const spamData = [
-    { day: "Mon", spamCount: 1 },
-    { day: "Tue", spamCount: 1 },
-    { day: "Wed", spamCount: 1 },
-    { day: "Thu", spamCount: 2 },
-    { day: "Fri", spamCount: 1 },
-    { day: "Sat", spamCount: 1 },
-    { day: "Sun", spamCount: 3 },
-  ];
+  // const spamData = [
+  //   { day: "Mon", spamCount: 1 },
+  //   { day: "Tue", spamCount: 1 },
+  //   { day: "Wed", spamCount: 1 },
+  //   { day: "Thu", spamCount: 2 },
+  //   { day: "Fri", spamCount: 1 },
+  //   { day: "Sat", spamCount: 1 },
+  //   { day: "Sun", spamCount: 3 },
+  // ];
 
   return (
     <div
@@ -219,7 +305,7 @@ const Dashboard = () => {
               <div className="w-full h-24 mb-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={spamData}
+                    data={spamStats}
                     margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
                   >
                     <XAxis

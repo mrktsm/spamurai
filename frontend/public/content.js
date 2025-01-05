@@ -219,7 +219,7 @@ function getMessageBody() {
         .then((response) => response.json())
         .then((result) => {
           console.log("Prediction:", result);
-
+          console.log(userId);
           const iframe = document.querySelector("#action-bar");
           if (iframe) {
             iframe.contentWindow.postMessage(

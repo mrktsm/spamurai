@@ -1,4 +1,5 @@
-from fastapi import Depends, FastAPI
+from datetime import datetime
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from database import engine, SessionLocal
@@ -44,6 +45,7 @@ class SpamAnalysisResponse(BaseModel):
     sender_domain: str
     is_personal_email: bool
     malicious_content: str
+    user_id: str
 
     class Config:
         # Allow ORM models to work directly with Pydantic models
@@ -132,10 +134,52 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
         "sender_domain": sender_domain,
         "is_personal_email": is_personal_email,
         "malicious_content": malicious_content,
+        "user_id": str(data.user),
     }
 
-    # Save the full analysis to the database
+    # Create the message first
     message = create_message(db, user.id, data.message_id, full_analysis)
 
-    # Return the newly created analysis
+    # Update daily stats
+    today = datetime.now().date()
+    daily_stats = db.query(models.DailySpamStats).filter(
+        models.DailySpamStats.user_id == user.id,
+        models.DailySpamStats.date == today
+    ).first()
+    
+    if not daily_stats:
+        daily_stats = models.DailySpamStats(
+            user_id=user.id,
+            date=today,
+            spam_count=0
+        )
+        db.add(daily_stats)
+    
+    # Update spam count if the email is classified as spam
+    if spam_label in ['Suspicious', 'High Risk']:
+        daily_stats.spam_count += 1
+        db.commit()  # Commit the daily stats update
+
+    # Return the analysis
     return SpamAnalysisResponse(**full_analysis)
+
+@app.get("/api/spam-stats/last-week")
+async def get_last_week_stats(db: Session = Depends(get_db), user: str = None):
+    if not user:
+        raise HTTPException(status_code=400, detail="User ID is required")
+        
+    user_record = db.query(models.User).filter(models.User.userid == user).first()
+    if not user_record:
+        # Return empty array instead of 404 error
+        return []
+        
+    stats = models.DailySpamStats.get_last_week_stats(db, user_record.id)
+    
+    # Ensure we return a list of dictionaries
+    return [
+        {
+            "date": stat.date.isoformat(),
+            "spam_count": stat.spam_count
+        }
+        for stat in stats
+    ]
