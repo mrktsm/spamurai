@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons"; // Import the GitHub icon
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Switch from "./components/Switch";
+import StarRating from "./components/StarRating";
 
 function App() {
   const [protectionEnabled, setProtectionEnabled] = useState(true);
@@ -77,9 +78,7 @@ function App() {
       <div className="w-full">
         <footer className="bg-zinc-900 flex justify-between items-center p-3 mt-4">
           <div className="flex items-center">
-            <h1 className="text-sm text-left font-semibold text-rose-300 ml-2">
-              *****
-            </h1>
+            <StarRating />
           </div>
           {/* GitHub Icon in the footer, aligned to the right */}
           <a

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -183,3 +183,42 @@ async def get_last_week_stats(db: Session = Depends(get_db), user: str = None):
         }
         for stat in stats
     ]
+
+@app.get("/api/spam-stats/improvement-rate")
+async def get_improvement_rate(db: Session = Depends(get_db), user: str = None):
+    if not user:
+        raise HTTPException(status_code=400, detail="User ID is required")
+    
+    user_record = db.query(models.User).filter(models.User.userid == user).first()
+    if not user_record:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    today = datetime.now().date()
+    last_14_days = today - timedelta(days=14)
+    
+    # Query stats for the last 14 days
+    stats = db.query(models.DailySpamStats)\
+              .filter(models.DailySpamStats.user_id == user_record.id)\
+              .filter(models.DailySpamStats.date >= last_14_days)\
+              .order_by(models.DailySpamStats.date)\
+              .all()
+    
+    if not stats:
+        return {"improvement_rate": None, "message": "No data available for calculation"}
+
+    # Separate stats into two 7-day periods
+    period_1_total = sum(stat.spam_count for stat in stats if stat.date < today - timedelta(days=7))
+    period_2_total = sum(stat.spam_count for stat in stats if stat.date >= today - timedelta(days=7))
+    
+    # Calculate improvement rate
+    if period_1_total == 0:
+        # Avoid division by zero
+        improvement_rate = None if period_2_total == 0 else 100
+    else:
+        improvement_rate = ((period_2_total - period_1_total) / period_1_total) * 100
+
+    return {
+        "period_1_total": period_1_total,
+        "period_2_total": period_2_total,
+        "improvement_rate": improvement_rate
+    }
