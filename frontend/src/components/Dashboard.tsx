@@ -123,9 +123,9 @@ const Dashboard = () => {
             improvementData &&
             improvementData.improvement_rate !== undefined
           ) {
-            setImprovementRate(
-              `${improvementData.improvement_rate.toFixed(2)}%`
-            );
+            const rateStr = improvementData.improvement_rate.toFixed(2);
+            const cleanRate = rateStr.replace(/\.?0+$/, "");
+            setImprovementRate(`${cleanRate}%`);
           } else {
             setImprovementRate("No data available");
           }
