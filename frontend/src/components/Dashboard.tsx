@@ -52,7 +52,6 @@ const Dashboard = () => {
 
   const fetchSpamStats = async () => {
     try {
-      console.log("before fetch", predictionData?.user_id);
       const response = await fetch(
         `http://127.0.0.1:8000/api/spam-stats/last-week?user=${predictionData?.user_id}`
       );
@@ -61,62 +60,54 @@ const Dashboard = () => {
       }
       const data = await response.json();
 
-      console.log("API Response:", data); // Debug log
-
-      // Validate that data is an array
       if (!Array.isArray(data)) {
-        console.error("Data is not an array:", data);
         throw new Error("Invalid data format received from server");
       }
 
-      // Transform the data for the chart
-      const transformedData = data
-        .map((stat: any) => {
-          // Ensure we have the required properties
-          if (!stat.date || typeof stat.spam_count === "undefined") {
-            console.error("Invalid stat object:", stat);
-            return null;
-          }
+      // Get today's date
+      const today = new Date();
+      today.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
 
-          return {
-            day: new Date(`${stat.date}T12:00:00`).toLocaleDateString("en-US", {
-              weekday: "short",
-            }),
-            spamCount: stat.spam_count,
-            date: stat.date,
-          };
-        })
-        .filter((stat) => stat !== null); // Remove null values here
+      // Create array of last 7 days
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (6 - i)); // Subtract from 6 down to 0
+        return {
+          date: date.toISOString().split("T")[0], // YYYY-MM-DD format
+          spamCount: 0, // Default count
+        };
+      });
 
-      if (transformedData.length === 0) {
-        // Use fallback data if no valid data points
-        setSpamStats([
-          { day: "Mon", spamCount: 0, date: "2024-01-01" },
-          { day: "Tue", spamCount: 0, date: "2024-01-02" },
-          { day: "Wed", spamCount: 0, date: "2024-01-03" },
-          { day: "Thu", spamCount: 0, date: "2024-01-04" },
-          { day: "Fri", spamCount: 0, date: "2024-01-05" },
-          { day: "Sat", spamCount: 0, date: "2024-01-06" },
-          { day: "Sun", spamCount: 0, date: "2024-01-07" },
-        ]);
-      } else {
-        setSpamStats(transformedData);
-      }
+      // Create a map of existing data
+      const dataMap = new Map(data.map((stat) => [stat.date, stat.spam_count]));
 
-      // setError(null);
+      // Fill in the data where it exists
+      const transformedData = last7Days.map((day) => ({
+        day: new Date(`${day.date}T12:00:00`).toLocaleDateString("en-US", {
+          weekday: "short",
+        }),
+        spamCount: dataMap.get(day.date) || 0,
+        date: day.date,
+      }));
+
+      setSpamStats(transformedData);
     } catch (error) {
       console.error("Failed to fetch spam statistics:", error);
-      // Set fallback data
-      setSpamStats([
-        { day: "Mon", spamCount: 0, date: "2024-01-01" },
-        { day: "Tue", spamCount: 0, date: "2024-01-02" },
-        { day: "Wed", spamCount: 0, date: "2024-01-03" },
-        { day: "Thu", spamCount: 0, date: "2024-01-04" },
-        { day: "Fri", spamCount: 0, date: "2024-01-05" },
-        { day: "Sat", spamCount: 0, date: "2024-01-06" },
-        { day: "Sun", spamCount: 0, date: "2024-01-07" },
-      ]);
-      // setError("Failed to load spam statistics");
+      // Generate fallback data starting from today
+      const today = new Date();
+      today.setHours(12, 0, 0, 0);
+
+      const fallbackData = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (6 - i));
+        return {
+          day: date.toLocaleDateString("en-US", { weekday: "short" }),
+          spamCount: 0,
+          date: date.toISOString().split("T")[0],
+        };
+      });
+
+      setSpamStats(fallbackData);
     }
   };
 
