@@ -64,6 +64,15 @@ export default function ActionBar() {
   }, []);
 
   useEffect(() => {
+    // Check `popupEnabled` from local storage
+    chrome.storage.local.get("popupEnabled", (result) => {
+      if (result.popupEnabled === true && statusText === "High Risk") {
+        handleClick();
+      }
+    });
+  }, [statusText, predictionReceived]);
+
+  useEffect(() => {
     if (!predictionReceived) return;
 
     let newDynamicWidth = 65;
