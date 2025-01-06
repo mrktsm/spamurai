@@ -134,7 +134,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
         "sender_domain": sender_domain,
         "is_personal_email": is_personal_email,
         "malicious_content": malicious_content,
-        "user_id": str(data.user),
+        "user_id": str(user.id),
     }
 
     # Create the message first
