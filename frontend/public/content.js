@@ -207,7 +207,7 @@ function getMessageBody() {
       const { hasAttachments, hasLinks } =
         checkForAttachmentsAndLinks(messageData);
 
-      fetch("http://127.0.0.1:8000/predict", {
+      fetch("https://spamurai.online/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

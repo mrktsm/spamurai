@@ -54,7 +54,7 @@ const Dashboard = () => {
   const fetchSpamStats = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/spam-stats/last-week?user=${predictionData?.user_id}`
+        `https://spamurai.online/api/spam-stats/last-week?user=${predictionData?.user_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -92,6 +92,7 @@ const Dashboard = () => {
       }));
 
       setSpamStats(transformedData);
+      console.log(transformedData);
     } catch (error) {
       console.error("Failed to fetch spam statistics:", error);
       // Generate fallback data starting from today
@@ -142,7 +143,7 @@ const Dashboard = () => {
   const fetchImprovementRate = async (userId: string) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/spam-stats/improvement-rate?user=${userId}`
+        `https://spamurai.online/api/spam-stats/improvement-rate?user=${userId}`
       );
 
       if (!response.ok) {
