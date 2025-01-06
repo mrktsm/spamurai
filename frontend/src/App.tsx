@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons"; // Import the GitHub icon
 // import { faHeart } from "@fortawesome/free-solid-svg-icons";
@@ -8,7 +8,27 @@ import Lock from "./components/Lock";
 
 function App() {
   const [protectionEnabled, setProtectionEnabled] = useState(true);
-  const [popupEnabled, setPopupEnabled] = useState(false);
+  const [popupEnabled, setPopupEnabled] = useState(true);
+
+  // Load initial state from Chrome storage
+  useEffect(() => {
+    chrome.storage.local.get(
+      ["protectionEnabled", "popupEnabled"],
+      (result) => {
+        if (result.protectionEnabled !== undefined) {
+          setProtectionEnabled(result.protectionEnabled);
+        }
+        if (result.popupEnabled !== undefined) {
+          setPopupEnabled(result.popupEnabled);
+        }
+      }
+    );
+  }, []);
+
+  // Save state to Chrome storage when it changes
+  useEffect(() => {
+    chrome.storage.local.set({ protectionEnabled, popupEnabled });
+  }, [protectionEnabled, popupEnabled]);
 
   return (
     <div className="bg-zinc-800 text-white overflow-hidden">
@@ -57,7 +77,7 @@ function App() {
             <hr className="my-3 border-gray-700" />
           </div>
 
-          {/* Play Sound Setting */}
+          {/* Auto Popup for Spam Emails Setting */}
           <div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-100">

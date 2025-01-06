@@ -1,39 +1,45 @@
 function addButtonNextToDate() {
-  const dateElement = document.querySelector(".gH .g3");
+  chrome.storage.local.get("protectionEnabled", (result) => {
+    if (result.protectionEnabled !== true) {
+      return;
+    }
 
-  if (dateElement && !document.querySelector("#action-bar")) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "action-bar-wrapper";
-    wrapper.style.cssText = `
-          margin-right: 10px;
-          padding: 0;
-          background-color: #374151;
-          border: none;
-          border-radius: 20px;
-          cursor: pointer;
-          width: 20px;
-          height: 20px;
-          transition: width 0.5s ease;
-          overflow: hidden;
-        `;
+    const dateElement = document.querySelector(".gH .g3");
 
-    const iframe = document.createElement("iframe");
-    iframe.src = chrome.runtime.getURL("actionBar.html");
-    iframe.id = "action-bar";
-    iframe.style.border = "none";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.transition = "width 0.5s ease 0s";
-    iframe.style.backgroundColor = "#374151";
+    if (dateElement && !document.querySelector("#action-bar")) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "action-bar-wrapper";
+      wrapper.style.cssText = `
+            margin-right: 10px;
+            padding: 0;
+            background-color: #374151;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            transition: width 0.5s ease;
+            overflow: hidden;
+          `;
 
-    wrapper.appendChild(iframe);
-    dateElement.parentNode.insertBefore(wrapper, dateElement);
-    chrome.storage.local.get("isAuthenticated", (result) => {
-      if (result.isAuthenticated === "true") {
-        getMessageBody();
-      }
-    });
-  }
+      const iframe = document.createElement("iframe");
+      iframe.src = chrome.runtime.getURL("actionBar.html");
+      iframe.id = "action-bar";
+      iframe.style.border = "none";
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.transition = "width 0.5s ease 0s";
+      iframe.style.backgroundColor = "#374151";
+
+      wrapper.appendChild(iframe);
+      dateElement.parentNode.insertBefore(wrapper, dateElement);
+      chrome.storage.local.get("isAuthenticated", (result) => {
+        if (result.isAuthenticated === "true") {
+          getMessageBody();
+        }
+      });
+    }
+  });
 }
 
 // Message listener
