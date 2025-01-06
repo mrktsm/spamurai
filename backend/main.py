@@ -143,7 +143,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
     # Update daily stats
     today = datetime.now().date()
     daily_stats = db.query(models.DailySpamStats).filter(
-        models.DailySpamStats.user_id == user.id,
+        models.DailySpamStats.user_id == data.user,
         models.DailySpamStats.date == today
     ).first()
     
