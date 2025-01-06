@@ -149,7 +149,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
     
     if not daily_stats:
         daily_stats = models.DailySpamStats(
-            user_id=user.id,
+            user_id=data.user,
             date=today,
             spam_count=0
         )
