@@ -126,7 +126,7 @@ const Dashboard = () => {
           ) {
             const rateStr = improvementData.improvement_rate.toFixed(2);
             const cleanRate = rateStr.replace(/\.?0+$/, "");
-            setImprovementRate(`${cleanRate}%`);
+            setImprovementRate(`${cleanRate}`);
           } else {
             setImprovementRate("No data available");
           }
@@ -363,13 +363,13 @@ const Dashboard = () => {
               <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                 <span className="text-gray-300"> Improvement Rate </span>
                 <span
-                  className={`font-bold text-green-400 ${
+                  className={`font-bold ${
                     Number(improvementRate) >= 0
                       ? "text-green-400"
                       : "text-red-400"
                   }`}
                 >
-                  {improvementRate}
+                  {improvementRate}%
                 </span>
               </div>
             </motion.div>
