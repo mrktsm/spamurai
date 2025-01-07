@@ -216,14 +216,17 @@ async def get_improvement_rate(db: Session = Depends(get_db), user: str = None):
     current_week_avg = (sum(stat.spam_count for stat in current_week_stats) / 7) if current_week_stats else 0
     
     # Calculate improvement rate
-    # Note: We want positive numbers to indicate improvement (less spam)
-    if previous_week_avg == 0 and current_week_avg == 0:
-        improvement_rate = 0  # No change when both are 0
-    elif previous_week_avg == 0:
-        improvement_rate = -100  # Got worse from perfect
+    if not previous_week_stats:
+        # No previous data available
+        improvement_rate = 0
+    elif previous_week_avg == 0 and current_week_avg == 0:
+        # Both weeks perfect
+        improvement_rate = 0
     else:
-        # Negative sign because reduction in spam is an improvement
-        improvement_rate = -((current_week_avg - previous_week_avg) / previous_week_avg) * 100
+        # Calculate the percent change
+        # A positive number means fewer spam emails (improvement)
+        # A negative number means more spam emails (worse)
+        improvement_rate = -((current_week_avg - previous_week_avg) / max(previous_week_avg, 1)) * 100
     
     return {
         "previous_week_avg": round(previous_week_avg, 2),

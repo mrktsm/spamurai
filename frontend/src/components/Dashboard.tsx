@@ -60,7 +60,7 @@ const Dashboard = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
+
       if (!Array.isArray(data)) {
         throw new Error("Invalid data format received from server");
       }
@@ -362,7 +362,13 @@ const Dashboard = () => {
               </div>
               <div className="bg-zinc-700 rounded-xl p-3 flex justify-between items-center">
                 <span className="text-gray-300"> Improvement Rate </span>
-                <span className="font-bold text-green-400">
+                <span
+                  className={`font-bold text-green-400 ${
+                    Number(improvementRate) >= 0
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                >
                   {improvementRate}
                 </span>
               </div>
