@@ -39,16 +39,12 @@ class DailySpamStats(Base):
 
     @classmethod
     def get_last_week_stats(cls, db, user_id):
-        """Get spam statistics for the last complete week."""
+        """Get spam statistics for the last 7 days."""
         today = datetime.now().date()
-        # Get the end of the last complete week (last Saturday)
-        last_saturday = today - timedelta(days=(today.weekday() + 1) % 7)
-        # Get the start of that week (Sunday)
-        last_sunday = last_saturday - timedelta(days=6)
+        week_ago = today - timedelta(days=7)
         
         return db.query(cls)\
             .filter(cls.user_id == user_id)\
-            .filter(cls.date >= last_sunday)\
-            .filter(cls.date <= last_saturday)\
+            .filter(cls.date >= week_ago)\
             .order_by(cls.date)\
             .all()
