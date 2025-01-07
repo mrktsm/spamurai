@@ -1,6 +1,6 @@
 function addButtonNextToDate() {
   chrome.storage.local.get("protectionEnabled", (result) => {
-    if (result.protectionEnabled !== true) {
+    if (result.protectionEnabled === false) {
       return;
     }
 
