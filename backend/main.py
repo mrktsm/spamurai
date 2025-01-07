@@ -165,6 +165,27 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
     # Return the analysis
     return SpamAnalysisResponse(**full_analysis)
 
+@app.get("/api/spam-stats/last-week")
+async def get_last_week_stats(db: Session = Depends(get_db), user: str = None):
+    if not user:
+        raise HTTPException(status_code=400, detail="User ID is required")
+        
+    user_record = db.query(models.User).filter(models.User.userid == user).first()
+    if not user_record:
+        # Return empty array instead of 404 error
+        return []
+        
+    stats = models.DailySpamStats.get_last_week_stats(db, user_record.id)
+    
+    # Ensure we return a list of dictionaries
+    return [
+        {
+            "date": stat.date.isoformat(),
+            "spam_count": stat.spam_count
+        }
+        for stat in stats
+    ]
+
 @app.get("/api/spam-stats/improvement-rate")
 async def get_improvement_rate(db: Session = Depends(get_db), user: str = None):
     if not user:
