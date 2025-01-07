@@ -2,24 +2,66 @@
 import tensorflow as tf
 import pickle
 import os
+import gc
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+tf.config.set_visible_devices([], 'GPU')
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpus[0], True)
 
 def load_model_and_tokenizer():
-    # Load the model and tokenizer
-    model = tf.keras.models.load_model("model/new_spam_email_model.keras")
-    with open("model/tokenizer.pkl", "rb") as f:
-        tokenizer = pickle.load(f)
-    return model, tokenizer
+    try:
+        # Clear any existing sessions
+        tf.keras.backend.clear_session()
+        
+        # Configure TensorFlow for CPU only
+        tf.config.threading.set_intra_op_parallelism_threads(1)
+        tf.config.threading.set_inter_op_parallelism_threads(1)
+        
+        # Load model with minimal memory usage
+        model = tf.keras.models.load_model(
+            "model/new_spam_email_model.keras",
+            compile=False
+        )
+        
+        # Load tokenizer
+        with open("model/tokenizer.pkl", "rb") as f:
+            tokenizer = pickle.load(f)
+        
+        # Force garbage collection
+        gc.collect()
+        
+        return model, tokenizer
+    
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        raise
 
 def predict_spam(model, tokenizer, text: str) -> float:
-    # Preprocess the input text and tokenize it
-    seq = tokenizer.texts_to_sequences([text])
-    padded_seq = tf.keras.preprocessing.sequence.pad_sequences(seq, maxlen=100, padding='post', truncating='post')
+    try:
+        # Clear session before prediction
+        tf.keras.backend.clear_session()
+        
+        # Process single input with minimal memory
+        seq = tokenizer.texts_to_sequences([text])
+        padded_seq = tf.keras.preprocessing.sequence.pad_sequences(
+            seq,
+            maxlen=100,
+            padding='post',
+            truncating='post'
+        )
+        
+        # Predict with minimal batch size
+        prediction = model.predict(
+            padded_seq,
+            batch_size=1,
+            verbose=0
+        )[0][0]
+        
+        # Clean up
+        gc.collect()
+        
+        return float(prediction)
     
-    # Make the prediction using the trained model
-    prediction = model.predict(padded_seq)[0][0]
-    return prediction
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+        raise
