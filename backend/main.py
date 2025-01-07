@@ -9,9 +9,12 @@ import models
 from spam_ml_model import load_model_and_tokenizer, predict_spam
 from crud import create_user, create_message
 from spf_dkim_checker import check_email_authentication, get_domain_from_email
+import os
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 # Add CORS middleware to allow cross-origin requests
 app.add_middleware(
@@ -134,7 +137,7 @@ async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamA
         "sender_domain": sender_domain,
         "is_personal_email": is_personal_email,
         "malicious_content": malicious_content,
-        "user_id": str(user.id),
+        "user_id": str(data.user),
     }
 
     # Create the message first

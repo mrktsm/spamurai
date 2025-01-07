@@ -1,6 +1,12 @@
 # ml_model.py
 import tensorflow as tf
 import pickle
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpus[0], True)
 
 def load_model_and_tokenizer():
     # Load the model and tokenizer
