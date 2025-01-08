@@ -7,7 +7,6 @@ import gc
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 tf.config.set_visible_devices([], 'GPU')
 
-
 def load_model_and_tokenizer():
     try:
         # Clear any existing sessions

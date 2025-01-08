@@ -64,9 +64,11 @@ export default function ActionBar() {
   }, []);
 
   useEffect(() => {
+    if (!predictionReceived) return;
+
     // Check `popupEnabled` from local storage
     chrome.storage.local.get("popupEnabled", (result) => {
-      if (result.popupEnabled === true && statusText === "High Risk") {
+      if (result.popupEnabled !== false && statusText === "High Risk") {
         handleClick();
       }
     });

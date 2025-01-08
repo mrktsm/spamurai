@@ -207,7 +207,7 @@ function getMessageBody() {
       const { hasAttachments, hasLinks } =
         checkForAttachmentsAndLinks(messageData);
 
-      fetch("https://spamurai.online/predict", {
+      fetch("https://spamurai.online/api/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

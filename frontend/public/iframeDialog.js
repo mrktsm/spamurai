@@ -41,7 +41,7 @@ function injectModal() {
 let modalInjected = false;
 
 const modalObserver = new MutationObserver((mutationsList, observer) => {
-  if (!modalInjected && localStorage.getItem("isAuthenticated") !== "true") {
+  if (!modalInjected) {
     chrome.storage.local.get("isAuthenticated", (result) => {
       if (result.isAuthenticated !== "true") {
         console.log(result.isAuthenticated);

@@ -1,25 +1,5 @@
-// import ActionBar from "./components/ActionBar";
-// import ProgressCircle from "./components/ProgressCricle";
 
 function OAuthModal() {
-  // const createOAuth2URL = () => {
-  //   const clientId = encodeURIComponent(
-  //     "1089158818812-rnpeui53rt8er93jph1e7u0e3komk7rm.apps.googleusercontent.com"
-  //   );
-  //   const responseType = encodeURIComponent("token");
-  //   const redirectURI = encodeURIComponent(
-  //     "https://aelogdngopigomkfnmpnngfnbdmehkjg.chromiumapp.org"
-  //   );
-  //   const scope = encodeURIComponent(
-  //     "https://www.googleapis.com/auth/gmail.readonly"
-  //   );
-  //   const state = encodeURIComponent("jfkls3n");
-  //   const prompt = encodeURIComponent("consent");
-
-  //   let url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectURI}&state=${state}&scope=${scope}&prompt=${prompt}`;
-
-  //   return url;
-  // };
 
   const handleAuthentication = () => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {

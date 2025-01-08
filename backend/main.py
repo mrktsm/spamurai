@@ -55,7 +55,7 @@ class SpamAnalysisResponse(BaseModel):
 
 
 # Endpoint for health check
-@app.get("/health")
+@app.get("/api/health")
 async def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
@@ -66,7 +66,7 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/db_health")
+@app.get("/api/db_health")
 async def db_health_check(db: Session = Depends(get_db)):
     try:
         db.execute(text("SELECT 1")) 
@@ -74,7 +74,7 @@ async def db_health_check(db: Session = Depends(get_db)):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def predict_email(data: EmailData, db: Session = Depends(get_db)) -> SpamAnalysisResponse:
     # Check if the message already exists
     message = db.query(models.Message).filter(models.Message.message_id == data.message_id).first()

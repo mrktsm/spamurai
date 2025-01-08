@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path='.env')
+load_dotenv(dotenv_path='../.env')
 
 # Now, you can access the variables from the .env file
 URL_DATABASE = os.getenv("URL_DATABASE")

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Spamurai",
-  "description": "In progress",
+  "name": "Spamurai: Shield your inbox from spam",
+  "description": "Spamurai enhances Gmail's spam protection by analyzing and filtering unwanted emails.",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiv4RolWfRKe30jZ0n+SC+ElccBfLqNG5j2X8VfBTxh0oJJeJxfUf4KK+8bpppgd+6oZToI1k4vimTzXpOc3ZfyJmhBQ818WmcnsJvMHr9okj76gOk1yiLP6ZiQCLpnRfjQCBp/9m4sIc89SVMORkJso3Nz18CXtjauDgz+4Pm0rsulDTD1rwkP6LcNleFlQyGlKl9MtTWrEfmRm228smY0tYntH9tSQ4zhdwzAx7pAp5pp4dGIbG4fW/wsBFmCAbQKNoJT9LXK3yuQ3w5mBVaF6Z4e5N09OKhrWoAkrnvs/Arkr3dc8Wg5NlVXmxcZexcwF8vTBFTO6LZxhLt31xlwIDAQAB",
   "version": "1.0.1",
   "action": {
