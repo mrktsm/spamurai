@@ -74,8 +74,6 @@ function getMessageBody() {
     return;
   }
 
-  console.log("Current Email Message ID:", messageId);
-
   // Send a message to the background script to get the auth token
   chrome.runtime.sendMessage({ action: "getAuthToken" }, async (token) => {
     if (!token) {
@@ -93,7 +91,6 @@ function getMessageBody() {
     );
 
     const testData = await testResponse.json();
-    console.log(testData); // If the request succeeds, the token is valid
 
     try {
       // Fetch the message details
@@ -112,7 +109,6 @@ function getMessageBody() {
 
       const userInfo = await userInfoResponse.json();
       const userId = userInfo.sub; // `sub` is the unique identifier for the user
-      console.log("User ID:", userId);
 
       const response = await fetch(
         `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
@@ -130,10 +126,6 @@ function getMessageBody() {
       }
 
       const messageData = await response.json();
-      console.log("Message Data:", messageData);
-
-      // Example: Display the message snippet
-      console.log(`Message Snippet: ${messageData.snippet}`);
 
       let payload = messageData.payload;
       function extractTextFromHTML(htmlContent) {
@@ -198,8 +190,6 @@ function getMessageBody() {
       // Ensure non-null message body
       messageBody = messageBody || "";
 
-      console.log("Final Processed Message Body:", messageBody);
-
       const dkimSelector = extractDkimSelector(messageData);
       const sender = getSender(messageData);
       const { hasAttachments, hasLinks } =
@@ -222,8 +212,6 @@ function getMessageBody() {
       })
         .then((response) => response.json())
         .then((result) => {
-          console.log("Prediction:", result);
-          console.log(userId);
           const iframe = document.querySelector("#action-bar");
           if (iframe) {
             iframe.contentWindow.postMessage(
@@ -266,8 +254,6 @@ function safeBase64Decode(encodedData) {
       "="
     );
 
-    console.log("Cleaned and Padded Data:", paddedData);
-
     // Attempt decoding
     const decoded = atob(paddedData);
     return decodeURIComponent(escape(decoded));
@@ -282,10 +268,6 @@ function safeBase64Decode(encodedData) {
 }
 
 function debugBase64Decoding(encodedData) {
-  console.log("Raw Encoded Data:", encodedData);
-  console.log("Data Length:", encodedData.length);
-  console.log("Data First 50 chars:", encodedData.slice(0, 50));
-
   // Check for common encoding issues
   if (encodedData.includes(" ")) {
     console.warn("Encoded data contains whitespace");
@@ -304,7 +286,7 @@ function extractDkimSelector(messageData) {
   );
 
   if (!dkimHeader) {
-    console.log("No DKIM signature found");
+    console.warn("No DKIM signature found");
     return null;
   }
 
@@ -314,11 +296,9 @@ function extractDkimSelector(messageData) {
 
   if (selectorMatch && selectorMatch[1]) {
     const selector = selectorMatch[1].trim();
-    console.log("Found DKIM selector:", selector);
     return selector;
   }
 
-  console.log("Could not extract selector from DKIM signature");
   return null;
 }
 

@@ -42,7 +42,6 @@ const modalObserver = new MutationObserver((mutationsList, observer) => {
   if (!modalInjected) {
     chrome.storage.local.get("isAuthenticated", (result) => {
       if (result.isAuthenticated !== "true") {
-        console.log(result.isAuthenticated);
         injectModal();
         modalInjected = true;
         observer.disconnect(); // Stop observing after the first injection
@@ -61,7 +60,6 @@ window.addEventListener("message", (event) => {
     if (modal) {
       modal.close();
       modal.remove();
-      console.log("Modal closed successfully.");
     }
   }
 });

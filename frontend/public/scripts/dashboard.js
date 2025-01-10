@@ -3,7 +3,6 @@ window.addEventListener("message", (event) => {
     // Create iframe for dashboard
     const existingIframe = document.querySelector("#dashboard-iframe");
     if (existingIframe) {
-      console.log("Dashboard iframe is already open.");
       existingIframe.remove();
       return;
     }

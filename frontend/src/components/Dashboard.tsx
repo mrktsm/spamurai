@@ -37,7 +37,6 @@ const Dashboard = () => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "DASHBOARD_PREDICTION_DATA") {
         setPredictionData(event.data.payload);
-        console.log(event.data.payload.user_id);
       }
     };
 
@@ -51,6 +50,7 @@ const Dashboard = () => {
     }
   }, [predictionData]);
 
+  // Fetch spamStats and fill in the missing dates
   const fetchSpamStats = async () => {
     try {
       const response = await fetch(
@@ -91,7 +91,6 @@ const Dashboard = () => {
       }));
 
       setSpamStats(transformedData);
-      console.log(transformedData);
     } catch (error) {
       console.error("Failed to fetch spam statistics:", error);
       // Generate fallback data starting from today
@@ -109,7 +108,6 @@ const Dashboard = () => {
       });
 
       setSpamStats(fallbackData);
-      console.log(spamStats);
     }
   };
 
@@ -150,7 +148,7 @@ const Dashboard = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const data = await response.json(); // Parse JSON response
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error("Error fetching improvement rate:", error);
