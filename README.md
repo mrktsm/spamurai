@@ -69,11 +69,14 @@ The spam detection model is maintained in a separate repository. The spam detect
 
 ## API Endpoints
 
+## API Endpoints
+
 ```plaintext
-GET  /api/health          - Service health check
-GET  /api/db_health      - Database connection check
-POST /api/predict        - Email analysis
-GET  /api/spam-stats     - User spam statistics
+GET  /api/health                - Service health check
+GET  /api/db_health             - Database connection check
+POST /api/predict               - Email analysis
+GET  /api/spam-stats/last-week  - Get last week’s spam statistics
+GET  /api/spam-stats/improvement-rate - Get user’s improvement rate in spam detection over time
 ```
 
 ## Database Schema
