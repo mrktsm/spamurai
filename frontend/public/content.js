@@ -229,7 +229,10 @@ function getMessageBody() {
           const iframe = document.querySelector("#action-bar");
           if (iframe) {
             iframe.contentWindow.postMessage(
-              { type: "PREDICTION_RESULT", payload: result },
+              {
+                type: "PREDICTION_RESULT",
+                payload: result,
+              },
               "*"
             );
           }

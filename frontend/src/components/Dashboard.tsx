@@ -110,6 +110,7 @@ const Dashboard = () => {
       });
 
       setSpamStats(fallbackData);
+      console.log(spamStats);
     }
   };
 
@@ -158,7 +159,6 @@ const Dashboard = () => {
     }
   };
 
-  // Sample data for spam emails over last 7 days
   // const spamData = [
   //   { day: "Mon", spamCount: 1 },
   //   { day: "Tue", spamCount: 1 },
@@ -369,7 +369,7 @@ const Dashboard = () => {
                       : "text-red-400"
                   }`}
                 >
-                  {improvementRate}%
+                  {improvementRate}
                 </span>
               </div>
             </motion.div>
