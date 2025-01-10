@@ -1,6 +1,12 @@
 window.addEventListener("message", (event) => {
   if (event.data?.type === "OPEN_DASHBOARD_DIALOG") {
     // Create iframe for dashboard
+    const existingIframe = document.querySelector("#dashboard-iframe");
+    if (existingIframe) {
+      console.log("Dashboard iframe is already open.");
+      existingIframe.remove(); // Remove the iframe
+      return;
+    }
     const dashboardIframe = document.createElement("iframe");
     dashboardIframe.src = chrome.runtime.getURL("dashboard.html");
     dashboardIframe.style.zIndex = "9999";
