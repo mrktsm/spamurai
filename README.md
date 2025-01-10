@@ -58,7 +58,8 @@ Spamurai uses Google OAuth 2.0 for secure authentication:
 
 ### AI Model
 The spam detection model is maintained in a separate repository. The spam detection model is currently based on an advanced LSTM neural network. Future iterations may incorporate transformer-based models for even greater accuracy.
-[Link to AI Model Repository]
+
+[Link to AI Model Repository](https://github.com/mrktsm/spam-email-recognizer)
 
 ### Infrastructure
 - Hosted on AWS EC2 instances
@@ -80,9 +81,33 @@ GET  /api/spam-stats/improvement-rate - Get the rate of change in the number of 
 ## Database Schema
 
 The system uses PostgreSQL with the following main tables:
-- Users
-- Messages
-- DailySpamStats
+
+### `users` Table
+- **`id`**: Auto-incremented primary key for each user.
+- **`userid`**: Unique identifier for each user.
+  
+Foreign Key: `id` is referenced by `user_id` in the `messages` and `daily_spam_stats` tables.
+
+### `messages` Table
+- **`id`**: Auto-incremented primary key for each message.
+- **`message_id`**: Unique identifier for each email.
+- **`analysis`**: JSON storing spam analysis results.
+- **`user_id`**: Foreign key linking to `users.id`.
+
+Foreign Key: `user_id` references `users.id`.
+
+### `daily_spam_stats` Table
+- **`id`**: Auto-incremented primary key for each record.
+- **`user_id`**: Foreign key linking to `users.id`.
+- **`date`**: Date of the recorded stats.
+- **`spam_count`**: Number of spam emails for the user on that date.
+
+Foreign Key: `user_id` references `users.id`.
+
+### Relationships
+- `users` is the central table, referenced by `user_id` in both `messages` and `daily_spam_stats`.
+- `messages` tracks email data and spam analysis, while `daily_spam_stats` tracks daily spam counts per user.
+s
 
 ## Installation
 
@@ -116,13 +141,13 @@ Spamurai takes security seriously:
 - Secure token handling and storage
   
 ## Contributing
-We welcome contributions! If you'd like to contribute, please fork the repository, make your changes, and submit a pull request. We appreciate any enhancements, bug fixes, or improvements you can provide.
+Contributions are welcome! Fork the repository, make your changes, and submit a pull request. Any enhancements, bug fixes, or improvements are appreciated.
 
-Please ensure your code follows the existing style and is well-tested. If you have any questions, feel free to open an issue or contact us directly.
+Ensure that the code follows the existing style and includes proper tests. If there are any questions, feel free to open an issue or reach out for clarification.
 
 ## License
 
-[Add your license information here]
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
 
 ## Acknowledgments
 - **Gmail API** – For providing the functionality to access and manage Gmail data.
