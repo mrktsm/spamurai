@@ -79,9 +79,33 @@ GET  /api/spam-stats     - User spam statistics
 ## Database Schema
 
 The system uses PostgreSQL with the following main tables:
-- Users
-- Messages
-- DailySpamStats
+
+### `users` Table
+- **`id`**: Auto-incremented primary key for each user.
+- **`userid`**: Unique identifier for each user.
+  
+Foreign Key: `id` is referenced by `user_id` in the `messages` and `daily_spam_stats` tables.
+
+### `messages` Table
+- **`id`**: Auto-incremented primary key for each message.
+- **`message_id`**: Unique identifier for each email.
+- **`analysis`**: JSON storing spam analysis results.
+- **`user_id`**: Foreign key linking to `users.id`.
+
+Foreign Key: `user_id` references `users.id`.
+
+### `daily_spam_stats` Table
+- **`id`**: Auto-incremented primary key for each record.
+- **`user_id`**: Foreign key linking to `users.id`.
+- **`date`**: Date of the recorded stats.
+- **`spam_count`**: Number of spam emails for the user on that date.
+
+Foreign Key: `user_id` references `users.id`.
+
+### Relationships
+- `users` is the central table, referenced by `user_id` in both `messages` and `daily_spam_stats`.
+- `messages` tracks email data and spam analysis, while `daily_spam_stats` tracks daily spam counts per user.
+
 
 ## Installation
 
