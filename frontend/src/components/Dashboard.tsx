@@ -65,17 +65,16 @@ const Dashboard = () => {
         throw new Error("Invalid data format received from server");
       }
 
-      // Get today's date
       const today = new Date();
       today.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
 
       // Create array of last 7 days
       const last7Days = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(today);
-        date.setDate(today.getDate() - (6 - i)); // Subtract from 6 down to 0
+        date.setDate(today.getDate() - (6 - i));
         return {
-          date: date.toISOString().split("T")[0], // YYYY-MM-DD format
-          spamCount: 0, // Default count
+          date: date.toISOString().split("T")[0],
+          spamCount: 0,
         };
       });
 
@@ -369,7 +368,7 @@ const Dashboard = () => {
                       : "text-red-400"
                   }`}
                 >
-                  {improvementRate}
+                  {improvementRate}%
                 </span>
               </div>
             </motion.div>

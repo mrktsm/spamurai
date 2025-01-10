@@ -10,10 +10,9 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
   useEffect(() => {
-    // Set a delay before enabling animation to avoid initial load animation
-    const timeoutId = setTimeout(() => setShouldAnimate(true), 100); // delay by 100ms to avoid animation on load
+    const timeoutId = setTimeout(() => setShouldAnimate(true), 100);
 
-    return () => clearTimeout(timeoutId); // Cleanup timeout on component unmount
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -22,26 +21,23 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
       className={classNames(
         "flex w-10 h-4 rounded-full transition-all duration-300 shadow-lg cursor-pointer items-center select-none",
         {
-          "bg-rose-300": !isOn, // Color from the first version for 'on' state
+          "bg-rose-300": !isOn,
           "bg-rose-500": isOn,
         }
       )}
     >
       <span
-        className={classNames(
-          "h-3 w-3 bg-white rounded-full transform ml-1", // Adjusted size and common styles
-          {
-            "translate-x-5": isOn, // Handle position for 'on' state
-            "transition-all duration-300": shouldAnimate, // Enable transition after initial load
-          }
-        )}
+        className={classNames("h-3 w-3 bg-white rounded-full transform ml-1", {
+          "translate-x-5": isOn,
+          "transition-all duration-300": shouldAnimate,
+        })}
       />
       <span
         className={classNames(
-          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[18px]", // Style for text
+          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[18px]",
           {
-            "opacity-0": isOn, // Hide "Off" text when "On"
-            "opacity-100": !isOn, // Show "Off" text when "Off"
+            "opacity-0": isOn,
+            "opacity-100": !isOn,
           }
         )}
       >
@@ -49,10 +45,10 @@ export default function Switch({ isOn, handleToggle }: SwitchProps) {
       </span>
       <span
         className={classNames(
-          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[6px] user-select-none", // Style for text
+          "absolute text-[8px] font-medium text-white transition-opacity duration-300 ml-[6px] user-select-none",
           {
-            "opacity-100": isOn, // Show "On" text when "On"
-            "opacity-0": !isOn, // Hide "On" text when "Off"
+            "opacity-100": isOn,
+            "opacity-0": !isOn,
           }
         )}
       >

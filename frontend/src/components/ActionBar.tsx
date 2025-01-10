@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import ProgressCircle from "./ProgressCircle";
 
 export default function ActionBar() {
-  const [loaded, setLoaded] = useState<boolean>(false); // Initialize as false
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [loadCircle, setLoadCircle] = useState<boolean>(true);
 
-  const [percentage, setPercentage] = useState<number>(30); // Simulated percentage
+  const [percentage, setPercentage] = useState<number>(30);
   const [statusText, setStatusText] = useState<string>("Safe");
   const [statusColor, setStatusColor] = useState<string>("text-green-500");
-  const [dynamicWidth, setDynamicWidth] = useState<number>(20); // Default width
-  // Store the entire payload
+  const [dynamicWidth, setDynamicWidth] = useState<number>(20);
+
   const [payload, setPayload] = useState<any>(null);
 
   const [predictionReceived, setPredictionReceived] = useState<boolean>(false);
@@ -29,7 +29,6 @@ export default function ActionBar() {
         let newStatusText = spam_label || "Safe"; // Default to "Safe" if no label is provided
         let newStatusColor = "text-green-500"; // Default color
 
-        // Change color based on spam_label
         if (newStatusText === "Suspicious") {
           newStatusColor = "text-yellow-500";
         } else if (newStatusText === "High Risk") {
@@ -39,7 +38,6 @@ export default function ActionBar() {
         setStatusText(newStatusText);
         setStatusColor(newStatusColor);
 
-        // Set the new percentage
         setPercentage(newPercentage);
       }
     };
@@ -50,8 +48,6 @@ export default function ActionBar() {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
-
-  // Update statusText, statusColor, and dynamicWidth based on the percentage
 
   useEffect(() => {
     chrome.storage.local.get("isAuthenticated", (result) => {
@@ -66,7 +62,6 @@ export default function ActionBar() {
   useEffect(() => {
     if (!predictionReceived) return;
 
-    // Check `popupEnabled` from local storage
     chrome.storage.local.get("popupEnabled", (result) => {
       if (result.popupEnabled !== false && statusText === "High Risk") {
         handleClick();
@@ -87,7 +82,7 @@ export default function ActionBar() {
 
     setDynamicWidth(newDynamicWidth);
 
-    // Send updated dynamicWidth to parent
+    // Send updated dynamicWidth to parent for a smooth animation
     window.parent.postMessage(
       {
         type: "TOGGLE_ANIMATION",
@@ -95,10 +90,9 @@ export default function ActionBar() {
       },
       "*"
     );
-  }, [percentage]); // Dependency on percentage to update dynamicWidth and status
+  }, [percentage]); // Dependency on percentage
 
   const handleClick = () => {
-    // Send message to content script to open dashboard dialog
     if (loaded) {
       window.parent.postMessage(
         {
@@ -112,15 +106,15 @@ export default function ActionBar() {
 
   return (
     <div
-      onClick={handleClick} // Toggle the state when clicked
+      onClick={handleClick}
       className="bg-gradient-to-b from-zinc-900 to-gray-800 flex items-center justify-end cursor-pointer"
       style={{
-        width: loaded ? `${dynamicWidth}px` : "20px", // Dynamic width based on the text length
+        width: loaded ? `${dynamicWidth}px` : "20px",
         height: "20px",
         borderRadius: "20px",
         padding: "0px",
         border: "1px solid grey",
-        transition: "width 0.5s ease", // Smooth width transition
+        transition: "width 0.5s ease",
       }}
     >
       {/* Conditionally render the "Safe" text if loaded */}
@@ -137,7 +131,7 @@ export default function ActionBar() {
           percentage={percentage}
           radius={8}
           strokeWidth={3}
-          isLoading={loadCircle} // Pass `loadCircle` as a boolean
+          isLoading={loadCircle}
         />
       </div>
     </div>

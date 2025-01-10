@@ -69,7 +69,6 @@ const Lock = ({ isLocked = false }) => {
           ry="18.5"
         />
       </svg>
-      {/* No label */}
     </div>
   );
 };

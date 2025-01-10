@@ -14,12 +14,16 @@
     "128": "spamurai_red.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "scripts/background.js"
   },
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["iframeDialog.js", "content.js", "dashboard.js"]
+      "js": [
+        "scripts/iframeDialog.js",
+        "scripts/content.js",
+        "scripts/dashboard.js"
+      ]
     }
   ],
   "permissions": [

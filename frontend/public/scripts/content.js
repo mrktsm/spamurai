@@ -47,7 +47,7 @@ window.addEventListener("message", (event) => {
   if (event.data?.type === "TOGGLE_ANIMATION") {
     const wrapper = document.querySelector(".action-bar-wrapper");
     if (wrapper && event.data?.dynamicWidth) {
-      wrapper.style.width = `${event.data.dynamicWidth}px`; // Adjust to incoming dynamicWidth
+      wrapper.style.width = `${event.data.dynamicWidth}px`; // Adjust to incoming dynamicWidth for a smooth animation
     }
   }
 });
@@ -76,7 +76,6 @@ function getMessageBody() {
 
   console.log("Current Email Message ID:", messageId);
 
-  // Send a message to the background script to get the auth token
   // Send a message to the background script to get the auth token
   chrome.runtime.sendMessage({ action: "getAuthToken" }, async (token) => {
     if (!token) {
@@ -171,7 +170,6 @@ function getMessageBody() {
         }
       }
 
-      // Use this in your existing decoding logic
       let messageBody = "";
 
       if (payload.parts) {
@@ -258,9 +256,9 @@ function safeBase64Decode(encodedData) {
   try {
     // Remove whitespace and newlines
     const cleanData = encodedData
-      .replace(/\s/g, "") // Remove all whitespace
-      .replace(/-/g, "+") // Replace URL-safe characters
-      .replace(/_/g, "/"); // Replace URL-safe characters
+      .replace(/\s/g, "")
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
 
     // Add padding if needed
     const paddedData = cleanData.padEnd(
@@ -298,7 +296,6 @@ function debugBase64Decoding(encodedData) {
 }
 
 function extractDkimSelector(messageData) {
-  // Get headers from the message data
   const headers = messageData.payload.headers;
 
   // Find the DKIM-Signature header

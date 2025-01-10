@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/free-brands-svg-icons"; // Import the GitHub icon
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 // import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Switch from "./components/Switch";
 import StarRating from "./components/StarRating";
@@ -32,7 +32,6 @@ function App() {
 
   return (
     <div className="bg-zinc-800 text-white overflow-hidden">
-      {/* Header */}
       <div className="w-full">
         <header className="bg-zinc-900 flex justify-between items-center p-3">
           <div className="flex items-center">
@@ -40,7 +39,6 @@ function App() {
               Spamurai
             </h1>
           </div>
-          {/* GitHub Icon in the header, aligned to the right */}
           <a
             href="https://github.com/mrktsm/spamurai"
             target="_blank"
@@ -58,7 +56,6 @@ function App() {
             Quick settings
           </h2>
 
-          {/* Display Button Setting */}
           <div className="mb-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-1">
@@ -77,7 +74,6 @@ function App() {
             <hr className="my-3 border-gray-700" />
           </div>
 
-          {/* Auto Popup for Spam Emails Setting */}
           <div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-100">
@@ -103,7 +99,6 @@ function App() {
           <div className="flex items-center">
             <StarRating />
           </div>
-          {/* GitHub Icon in the footer, aligned to the right */}
           {/* <a
             href="https://github.com/mrktsm/spamurai"
             target="_blank"

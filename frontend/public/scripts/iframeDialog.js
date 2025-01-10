@@ -13,7 +13,6 @@ function injectModal() {
   dialog.style.top = "0";
   dialog.style.left = "0";
 
-  // Create the iframe
   const iframe = document.createElement("iframe");
   iframe.src = chrome.runtime.getURL("modal.html");
   iframe.id = "custom-modal";
@@ -37,7 +36,6 @@ function injectModal() {
   dialog.showModal();
 }
 
-// MutationObserver to inject the modal
 let modalInjected = false;
 
 const modalObserver = new MutationObserver((mutationsList, observer) => {
@@ -57,7 +55,7 @@ modalObserver.observe(document.body, { childList: true, subtree: true });
 
 // Listen for messages to close the modal
 window.addEventListener("message", (event) => {
-  // Verify the message comes from the expected origin (you can restrict this to improve security)
+  // Verify the message comes from the expected origin
   if (event.data.action === "closeModal") {
     const modal = document.querySelector("#oauth-modal");
     if (modal) {
