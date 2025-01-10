@@ -69,46 +69,20 @@ The spam detection model is maintained in a separate repository. The spam detect
 
 ## API Endpoints
 
-## API Endpoints
-
 ```plaintext
-GET  /api/health                - Service health check
-GET  /api/db_health             - Database connection check
-POST /api/predict               - Email analysis
-GET  /api/spam-stats/last-week  - Get last week’s spam statistics
-GET  /api/spam-stats/improvement-rate - Get user’s improvement rate in spam detection over time
+GET  /api/health                      - Service health check
+GET  /api/db_health                   - Database connection check
+POST /api/predict                     - Email analysis
+GET  /api/spam-stats/last-week        - Get last week’s spam statistics
+GET  /api/spam-stats/improvement-rate - Get the rate of change in the number of spam emails a user receives over time
 ```
 
 ## Database Schema
 
 The system uses PostgreSQL with the following main tables:
-
-### `users` Table
-- **`id`**: Auto-incremented primary key for each user.
-- **`userid`**: Unique identifier for each user.
-  
-Foreign Key: `id` is referenced by `user_id` in the `messages` and `daily_spam_stats` tables.
-
-### `messages` Table
-- **`id`**: Auto-incremented primary key for each message.
-- **`message_id`**: Unique identifier for each email.
-- **`analysis`**: JSON storing spam analysis results.
-- **`user_id`**: Foreign key linking to `users.id`.
-
-Foreign Key: `user_id` references `users.id`.
-
-### `daily_spam_stats` Table
-- **`id`**: Auto-incremented primary key for each record.
-- **`user_id`**: Foreign key linking to `users.id`.
-- **`date`**: Date of the recorded stats.
-- **`spam_count`**: Number of spam emails for the user on that date.
-
-Foreign Key: `user_id` references `users.id`.
-
-### Relationships
-- `users` is the central table, referenced by `user_id` in both `messages` and `daily_spam_stats`.
-- `messages` tracks email data and spam analysis, while `daily_spam_stats` tracks daily spam counts per user.
-
+- Users
+- Messages
+- DailySpamStats
 
 ## Installation
 
