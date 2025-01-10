@@ -99,13 +99,15 @@ export default function ActionBar() {
 
   const handleClick = () => {
     // Send message to content script to open dashboard dialog
-    window.parent.postMessage(
-      {
-        type: "OPEN_DASHBOARD_DIALOG",
-        payload: payload,
-      },
-      "*"
-    );
+    if (loaded) {
+      window.parent.postMessage(
+        {
+          type: "OPEN_DASHBOARD_DIALOG",
+          payload: payload,
+        },
+        "*"
+      );
+    }
   };
 
   return (
