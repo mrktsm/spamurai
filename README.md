@@ -1,6 +1,18 @@
 # Spamurai: AI-Powered Email Protection
 
-![Spamurai Logo](path/to/logo.png)
+[![YouTube Video](https://img.youtube.com/vi/kYLiuQEuTiY/maxresdefault.jpg)](https://www.youtube.com/watch?v=kYLiuQEuTiY)
+
+<!-- Centering the first two images -->
+<p align="center">
+  <img src="assets/screenshots/6.jpg" alt="Screenshot 1" width="500" />
+  <img src="assets/screenshots/7.jpg" alt="Screenshot 2" width="500" />
+</p>
+
+<!-- The third image below, also centered -->
+<p align="center">
+  <img src="assets/screenshots/8.jpg" alt="Screenshot 3" width="500" />
+</p>
+
 
 ## Overview
 
