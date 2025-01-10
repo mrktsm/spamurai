@@ -11,7 +11,9 @@
     "16": "icons/spamurai_red_outline.png",
     "32": "icons/spamurai_red_outline.png",
     "48": "icons/spamurai_red_outline.png",
-    "128": "icons/spamurai_red.png"
+    "64": "icons/spamurai_red.png",
+    "128": "icons/spamurai_red.png",
+    "256": "icons/spamurai_red.png"
   },
   "background": {
     "service_worker": "scripts/background.js"
