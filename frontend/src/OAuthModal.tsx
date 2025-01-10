@@ -26,7 +26,7 @@ function OAuthModal() {
       style={{ height: "492.5px", width: "576px" }}
     >
       <img
-        src="spamurai_png.png"
+        src="icons/spamurai_png.png"
         alt="Image Placeholder"
         className="mb-4 w-40 h-40"
       />

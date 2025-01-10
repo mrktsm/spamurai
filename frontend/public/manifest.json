@@ -8,10 +8,10 @@
     "default_popup": "index.html"
   },
   "icons": {
-    "16": "test3.png",
-    "32": "test3.png",
-    "48": "test3.png",
-    "128": "spamurai_red.png"
+    "16": "icons/spamurai_red_outline.png",
+    "32": "icons/spamurai_red_outline.png",
+    "48": "icons/spamurai_red_outline.png",
+    "128": "icons/spamurai_red.png"
   },
   "background": {
     "service_worker": "scripts/background.js"
@@ -43,8 +43,12 @@
   "web_accessible_resources": [
     {
       "resources": ["*.html"],
-      "matches": ["<all_urls>"]
+      "matches": ["https://mail.google.com/*"]
     }
   ],
-  "host_permissions": ["https://*/*", "http://*/*"]
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://www.googleapis.com/*",
+    "https://spamurai.online/*"
+  ]
 }
