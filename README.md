@@ -1,6 +1,6 @@
 # Spamurai: AI-Powered Email Protection
 
-[![YouTube Video](https://img.youtube.com/vi/kYLiuQEuTiY/maxresdefault.jpg)](https://www.youtube.com/watch?v=kYLiuQEuTiY)
+[![YouTube Video](https://github.com/user-attachments/assets/1c6cdd3a-4e5d-44d4-b751-df55c5d587f2)](https://www.youtube.com/watch?v=kYLiuQEuTiY)
   
 *Click on the image above to watch the demo video!*
 
