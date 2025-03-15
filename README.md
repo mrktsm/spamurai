@@ -2,7 +2,7 @@
 
 ![spamurai-rounded](https://github.com/user-attachments/assets/89a21db7-2cc0-48c4-988f-c86a299e1cd8)
 
-*Click on the image above to watch the demo video!*
+[*Click here to watch the demo video!*](https://www.youtube.com/watch?v=kYLiuQEuTiY&ab_channel=MarkoTsymbaliuk)
 
 ## Overview
 
